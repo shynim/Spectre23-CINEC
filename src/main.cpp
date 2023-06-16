@@ -283,16 +283,16 @@ void spectreLoop(){
 }
 
 void setup(){
-    setupGyro();
-    spectreSetup();
     while(frontSonic.readDistance() > 5){
-
+        
     }
+    spectreSetup();
+    setupGyro();
     turn90('r');
-    while(frontSonic.readDistance()){
-
+    while(frontSonic.readDistance() > 5){
+        
     }
-    
+    delay(1000);
     Serial.begin(9600);
 }
 
