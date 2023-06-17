@@ -20,6 +20,7 @@ extern int gyroMax;
 
 extern int sonicBase;
 extern int sonicMax; 
+extern int sonicMin;
 
 extern int turnMax;
 extern int turnBase;

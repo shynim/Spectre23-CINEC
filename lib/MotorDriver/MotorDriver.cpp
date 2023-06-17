@@ -179,12 +179,12 @@ void MotorDriver::applySonicPid(int correction){
     int leftSpeed = abs(sonicBase) + correction;
     int rightSpeed = abs(sonicBase) - correction;
 
-    if (leftSpeed < 0) {
-        leftSpeed = 0;
+    if (leftSpeed < sonicMin) {
+        leftSpeed = sonicMin;
     }
 
-    if (rightSpeed < 0) {
-        rightSpeed = 0;
+    if (rightSpeed < sonicMin) {
+        rightSpeed = sonicMin;
     }
 
     if (leftSpeed >= sonicMax) {
@@ -197,4 +197,3 @@ void MotorDriver::applySonicPid(int correction){
 
     sonicBase >= 0 ? forward(leftSpeed, rightSpeed):backward(rightSpeed, leftSpeed);
 }
-

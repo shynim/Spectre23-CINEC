@@ -122,11 +122,10 @@ void moveOneCell(){
 
 void autoPosition(){
     if(frontSonic.wallFound()){
-        int initDistance = frontSonic.readDistance();
         int stableTime = 0;
 
         int setPointSonic = sideGap;
-        int setPoint = initDistance - frontGap; //swap if going backwards
+        int setPoint = frontGap; //swap if going backwards
 
         while(stableTime <= setTime){
             int errSonic = setPointSonic - rightSonic.readDistance();
@@ -160,11 +159,11 @@ void turn90(char dir){
     int stableTime = 0;
 
     int setPoint;
-    setPoint = dir == 'r'? (initAngle - 90):(initAngle + 90); //use 'r' if turns in other dir
+    setPoint = dir == 'l'? (initAngle - 80):(initAngle + 80); //use 'r' if turns in other dir
     while(stableTime <= setTime){
         int err = setPoint - getAngle();
         int correction = pid.getTurnCorrection(err);
-        driver.applyGyroTurnPid(correction * -1);
+        driver.applyGyroTurnPid(correction);
         
         if(err == 0){
             stableTime++;
@@ -292,20 +291,18 @@ void setup(){
     while(frontSonic.readDistance() > 5){
         
     }
-    delay(1000);
+    delay(2000);
     Serial.begin(9600);
 }
 
 void loop(){
-    // moveOneCell();
-    // autoPosition();
-    // turn90('l');
-
-    // Serial.print(getAngle());
-    // Serial.println();
-
+    
+    
     moveOneCell();
     autoPosition();
     turn90('l');
+    
+ // Serial.print(getAngle());
+ // Serial.println();
 
 }

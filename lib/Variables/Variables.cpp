@@ -32,20 +32,21 @@ int horizontalWallGrid[mazeSize+1][mazeSize] = {
 const int leftPins[] = {6, 9, 8};
 const int rightPins[] = {7, 11, 10};
 
-int stopDelay = 5000;
+int stopDelay = 2000;
 
 //Speeds
 int gyroBase = 60;
 int gyroMax = 110;
 
-int sonicBase = 60;
-int sonicMax = 80;
+int sonicBase = 50;
+int sonicMax = sonicBase+20;
+int sonicMin = sonicBase-20;
 
 int turnMax = 80;
 int turnBase = 60;
 
-int driveMax = 80;
-int driveBase = 0;
+int driveMax = 70;
+int driveBase = 50;
 
 //ultraSonic
 const int leftSonicPins[] = {28,29}; //{trig,echo}
@@ -57,9 +58,9 @@ const double gP = 0.137;
 const double gI = 0;    
 const double gD = 1.9;
 
-const double sP = 10;   
+const double sP = 5;   
 const double sI = 0;    
-const double sD = 10;
+const double sD = 0.0001;
 
 const double dP = 20;
 const double dI = 0;    
@@ -71,7 +72,7 @@ const double tD = 1;
 
 //Maze
 const int cellDistance = 23; //cm
-const int sideGap = 6;
+const int sideGap = 7;
 const int frontGap = 5;
 
 const int maxDistance = 200;
@@ -80,4 +81,4 @@ const int maxDistance = 200;
 char orientation[4] = {'f', 'r', 'b', 'l'};
 int orientationKey = 0;
 
-int setTime = 20;
+int setTime = 40;
