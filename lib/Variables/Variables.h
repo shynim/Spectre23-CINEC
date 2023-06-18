@@ -8,6 +8,10 @@ extern int grid[mazeSize][mazeSize];
 extern int verticalWallGrid[mazeSize][mazeSize+1];
 extern int horizontalWallGrid[mazeSize+1][mazeSize];
 
+extern int jump;
+extern int preState;
+extern int state;
+
 //motorDriver
 extern const int leftPins[];
 extern const int rightPins[];
@@ -18,9 +22,9 @@ extern int stopDelay;
 extern int gyroBase;
 extern int gyroMax;
 
-extern int sonicBase;
-extern int sonicMax; 
-extern int sonicMin;
+extern int sonicRightBase;
+extern int sonicLeftBase;
+extern int correctionMax;
 
 extern int turnMax;
 extern int turnBase;
@@ -34,6 +38,12 @@ extern const int frontSonicPins[];
 extern const int rightSonicPins[];
 
 //PID
+extern int prevGyroError;    
+extern int prevSonicError;      
+extern int prevDriveError;
+extern int prevTurnError;
+extern int prevWallError;
+
 extern const double gP ;
 extern const double gI;    
 extern const double gD;
@@ -49,6 +59,10 @@ extern const double dD;
 extern const double tP;
 extern const double tI;    
 extern const double tD;
+
+extern const double wP;
+extern const double wI;    
+extern const double wD;
  
 extern const int cellDistance; //cm
 extern const int sideGap;

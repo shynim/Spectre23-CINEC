@@ -93,6 +93,89 @@ String mazeReverse(String maze){
     return reversed;
 }
 
+void goStraight(){
+    // int setPoint = sideGap;
+
+    // int err = setPoint - rightSonic.readDistance();
+    // int correction = pid.getSonicCorrection(err);
+    // driver.applySonicPid(correction * -1);
+
+    driver.forward(sonicLeftBase,sonicRightBase);
+}
+
+void wallFollow(){
+    if(leftSonic.readDistance() != 0 && rightSonic.readDistance() != 0){
+        state = 0;
+        if (state != preState)
+        {
+          jump = 5;
+          prevWallError = 0;
+        }
+        if (jump>0)
+        {
+          goStraight();
+          jump = jump-1;
+        }
+        else
+        {
+          int err = leftSonic.readDistance() - rightSonic.readDistance();
+          int correction = pid.getWallCorrection(err);
+          driver.applyWallPid(correction * -1);
+        }
+
+    }else if(leftSonic.readDistance() == 0 && rightSonic.readDistance() != 0){
+        state = 1;
+        if (state != preState)
+        {
+          jump = 5;
+          prevSonicError = 0;
+        }
+        if (jump>0)
+        {
+          goStraight();
+          jump = jump-1;
+        }
+        else
+        {
+          int err = sideGap - rightSonic.readDistance();
+          int correction = pid.getSonicCorrection(err);
+          driver.applySonicPid(correction * -1);
+        }
+
+    }else if(leftSonic.readDistance() != 0 && rightSonic.readDistance() == 0){
+        state = 2;
+        if (state != preState)
+        {
+          jump = 5;
+          prevSonicError = 0;
+        }
+        if (jump>0)
+        {
+          goStraight();
+          jump = jump-1;
+        }
+        else
+        {
+          int err = sideGap - leftSonic.readDistance();
+          int correction = pid.getSonicCorrection(err);
+          driver.applySonicPid(correction);
+        }
+
+    }else if(leftSonic.readDistance() == 0 && rightSonic.readDistance() == 0){
+        state = 3;
+        goStraight();
+
+        prevWallError = 0;
+    }
+    /*Serial.print(state);
+    Serial.print("  ");
+    Serial.print(leftSonic.readDistance());
+    Serial.print("  ");
+    Serial.print(rightSonic.readDistance());
+    Serial.println();*/
+    preState = state;
+}
+
 void moveOneCell(){
     
     int initDistance = frontSonic.readDistance();
@@ -143,15 +226,6 @@ void autoPosition(){
         }
         driver.stop();    
     }
-}
-
-void goStraight(){
-    int setPoint = sideGap;
-
-    int err = setPoint - rightSonic.readDistance();
-    int correction = pid.getSonicCorrection(err);
-    driver.applySonicPid(correction * -1);
-
 }
 
 void turn90(char dir){
@@ -281,7 +355,7 @@ void spectreLoop(){
 
 }
 
-void setup(){
+void tempSpectreSetup(){
     while(frontSonic.readDistance() > 5){
         
     }
@@ -295,14 +369,18 @@ void setup(){
     Serial.begin(9600);
 }
 
-void loop(){
+void serialPrint(int data){
+    Serial.print(data);
+    Serial.println();
+}
+
+void setup(){
+    spectreSetup();
+    Serial.begin(9600);
+}
+
+void loop(){ 
     
-    
-    moveOneCell();
-    autoPosition();
-    turn90('l');
-    
- // Serial.print(getAngle());
- // Serial.println();
+    wallFollow();
 
 }

@@ -3,6 +3,7 @@
 #include <Variables.h>
 
 int Sonic::readDistance(){
+    delay(5);
     return sonic.ping_cm();
 }
 

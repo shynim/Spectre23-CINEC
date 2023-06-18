@@ -172,28 +172,32 @@ void MotorDriver::applySonicDrivePid(int correction){
     if(correction >= -driveBase && correction <= 0){
         correction = -driveBase;
     }
-    sonicBase = correction;
+    sonicRightBase = correction;
+    sonicLeftBase = correction;
+}
+
+void MotorDriver::applyWallPid(int correction){
+    if(correction > correctionMax){
+        correction = correctionMax;
+    }else if(correction < correctionMax * -1){
+        correction = correctionMax * -1;
+    }
+
+    int leftSpeed = abs(sonicLeftBase) + correction;
+    int rightSpeed = abs(sonicRightBase) - correction;
+
+    forward(leftSpeed, rightSpeed);
 }
 
 void MotorDriver::applySonicPid(int correction){
-    int leftSpeed = abs(sonicBase) + correction;
-    int rightSpeed = abs(sonicBase) - correction;
-
-    if (leftSpeed < sonicMin) {
-        leftSpeed = sonicMin;
+    if(correction > correctionMax){
+        correction = correctionMax;
+    }else if(correction < correctionMax * -1){
+        correction = correctionMax * -1;
     }
 
-    if (rightSpeed < sonicMin) {
-        rightSpeed = sonicMin;
-    }
+    int leftSpeed = abs(sonicLeftBase) + correction;
+    int rightSpeed = abs(sonicRightBase) - correction;
 
-    if (leftSpeed >= sonicMax) {
-        leftSpeed = sonicMax;
-    }
-
-    if (rightSpeed >= sonicMax) {
-        rightSpeed = sonicMax;
-    }
-
-    sonicBase >= 0 ? forward(leftSpeed, rightSpeed):backward(rightSpeed, leftSpeed);
+    forward(leftSpeed, rightSpeed);
 }

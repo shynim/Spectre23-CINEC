@@ -29,6 +29,8 @@ class MotorDriver{
 
         void applyGyroTurnPid(int correction);
 
+        void applyWallPid(int correction);
+
         void applySonicPid(int correction);
         
     private:

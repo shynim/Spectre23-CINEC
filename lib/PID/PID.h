@@ -7,22 +7,13 @@ class PID{
 
         int getSonicCorrection(int err);
 
+        int getWallCorrection(int err);
+
         int getDriveCorrection(int err);
 
         int getTurnCorrection(int err);
         
     private:
-        int totalGyroError = 0;        
-        int prevGyroError = 0;
-                
-        int totalSonicError = 0;
-        int prevSonicError = 0;
-                    
-        int totalDriveError = 0;
-        int prevDriveError = 0;
-                    
-        int totalTurnError = 0;
-        int prevTurnError = 0;
     
 };
 
