@@ -5,6 +5,8 @@ class PID{
     public: 
         int getGyroCorrection(int err);
 
+        int getEncoderCorrection(int err);
+
         int getSonicCorrection(int err);
 
         int getWallCorrection(int err);

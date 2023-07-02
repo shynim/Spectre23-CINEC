@@ -18,6 +18,10 @@ extern const int rightPins[];
 
 extern int stopDelay;
 
+//encoder
+extern const int leftEncoderPins[];
+extern const int rightEncoderPins[];
+
 //Speeds
 extern int gyroBase;
 extern int gyroMax;
@@ -38,15 +42,20 @@ extern const int frontSonicPins[];
 extern const int rightSonicPins[];
 
 //PID
-extern int prevGyroError;    
+extern int prevGyroError;  
+extern int prevEncoderError;  
 extern int prevSonicError;      
 extern int prevDriveError;
 extern int prevTurnError;
 extern int prevWallError;
 
-extern const double gP ;
+extern const double gP;
 extern const double gI;    
 extern const double gD;
+
+extern const double eP;
+extern const double eI;
+extern const double eD;
    
 extern const double sI;    
 extern const double sD;

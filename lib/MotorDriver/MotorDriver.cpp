@@ -133,6 +133,19 @@ void MotorDriver::applyGyroPid(int correction){
 
 }
 
+void MotorDriver::applyEncoderPid(int correction){
+    if(correction > correctionMax){
+        correction = correctionMax;
+    }else if(correction < correctionMax * -1){
+        correction = correctionMax * -1;
+    }
+
+    int leftSpeed = abs(sonicLeftBase) + correction;
+    int rightSpeed = abs(sonicRightBase) - correction;
+
+    forward(leftSpeed, rightSpeed);
+}
+
 void MotorDriver::applyGyroTurnPid(int correction){
     if(correction >= turnMax){
         correction = turnMax;

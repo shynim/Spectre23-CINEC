@@ -27,6 +27,8 @@ class MotorDriver{
 
         void applyGyroPid(int correction);
 
+        void applyEncoderPid(int correction);
+
         void applyGyroTurnPid(int correction);
 
         void applyWallPid(int correction);

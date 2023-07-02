@@ -13,6 +13,17 @@ int PID::getGyroCorrection(int error){
     return correction;
 }
 
+int PID::getEncoderCorrection(int error){
+    double p = error * eP;
+    double d = (error - prevEncoderError) *eD;
+
+    prevEncoderError = error;
+
+    int correction = (int)(p + d);
+
+    return correction;
+}
+
 int PID::getSonicCorrection(int error){
     double p = error * sP;
     double d = (error - prevSonicError) *sD;

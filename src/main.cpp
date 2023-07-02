@@ -6,12 +6,16 @@
 #include <Gyro.h>
 #include <Sonic.h>
 #include <string.h>
+#include <Encoder.h>
 
 Cell currentCell = {4,0};
 
 MotorDriver driver;
 PID pid;
 FloodFill floodFill;
+
+Encoder left(leftEncoderPins[0],leftEncoderPins[1]);
+Encoder right(rightEncoderPins[1],rightEncoderPins[1]);
 
 Sonic leftSonic(leftSonicPins[0],leftSonicPins[1],maxDistance);
 Sonic frontSonic(frontSonicPins[0],frontSonicPins[1],maxDistance);
@@ -94,13 +98,12 @@ String mazeReverse(String maze){
 }
 
 void goStraight(){
-    // int setPoint = sideGap;
 
-    // int err = setPoint - rightSonic.readDistance();
-    // int correction = pid.getSonicCorrection(err);
-    // driver.applySonicPid(correction * -1);
+    int errEncoder = left.read() - right.read();
+    int correction = pid.getEncoderCorrection(errEncoder);
+    driver.applyEncoderPid(correction);
 
-    driver.forward(sonicLeftBase,sonicRightBase);
+    //driver.forward(sonicLeftBase,sonicRightBase);
 }
 
 void wallFollow(){
@@ -292,6 +295,9 @@ void spectreLoop(){
             maze += 'R';
         }else{
             maze += 'B';
+            turn90('r');
+            autoPosition();
+            turn90('r');
         }
         moveOneCell();
     } //left hand rule end

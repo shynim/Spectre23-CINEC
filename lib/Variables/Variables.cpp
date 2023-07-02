@@ -38,6 +38,10 @@ const int rightPins[] = {7, 11, 10};
 
 int stopDelay = 2000;
 
+//encoder
+const int leftEncoderPins[] = {2,3};
+const int rightEncoderPins[] = {18,19};
+
 //Speeds
 int gyroBase = 60;
 int gyroMax = 110;
@@ -59,6 +63,7 @@ const int rightSonicPins[] = {30,31};
 
 //PID
 int prevGyroError = 0;    
+int prevEncoderError = 0;
 int prevSonicError = 0;      
 int prevDriveError = 0;
 int prevTurnError = 0;
@@ -67,6 +72,10 @@ int prevWallError = 0;
 const double gP = 0.137;
 const double gI = 0;    
 const double gD = 1.9;
+
+const double eP = 0.1;
+const double eI = 0;
+const double eD = 1;
 
 const double sP = 4;   
 const double sI = 0;    
@@ -83,8 +92,6 @@ const double dD = 80;
 const double tP = 1;
 const double tI = 0;    
 const double tD = 1;
-
-
 
 //Maze
 const int cellDistance = 23; //cm
