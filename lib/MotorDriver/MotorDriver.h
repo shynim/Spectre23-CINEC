@@ -23,8 +23,6 @@ class MotorDriver{
 
         void stop();
 
-        void applySonicDrivePid(int correction);
-
         void applyGyroPid(int correction);
 
         void applyEncoderPid(int correction);

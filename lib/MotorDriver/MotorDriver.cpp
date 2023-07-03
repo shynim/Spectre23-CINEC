@@ -171,24 +171,6 @@ void MotorDriver::applyGyroTurnPid(int correction){
     
 }
 
-void MotorDriver::applySonicDrivePid(int correction){
-    if(correction >= driveMax){
-        correction = driveMax;
-    }
-    if(correction <= -driveMax){
-        correction = -driveMax;
-    }
-    
-    if(correction <= driveBase && correction >= 0){
-        correction = driveBase;
-    }
-    if(correction >= -driveBase && correction <= 0){
-        correction = -driveBase;
-    }
-    sonicRightBase = correction;
-    sonicLeftBase = correction;
-}
-
 void MotorDriver::applyWallPid(int correction){
     if(correction > correctionMax){
         correction = correctionMax;

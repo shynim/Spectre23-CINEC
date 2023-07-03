@@ -46,17 +46,6 @@ int PID::getWallCorrection(int error){
     return correction;
 }
 
-int PID::getDriveCorrection(int error){
-    double p = error * dP;
-    double d = (error - prevDriveError) * dD;
-
-    prevDriveError = error;
-
-    int correction = (int)(p + d);
-
-    return correction;
-}
-
 int PID::getTurnCorrection(int error){
     double p = error * tP;
     double d = (error - prevTurnError) * tD;

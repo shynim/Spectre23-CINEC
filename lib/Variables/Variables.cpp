@@ -53,9 +53,6 @@ int correctionMax = 15;
 int turnMax = 80;
 int turnBase = 60;
 
-int driveMax = 70;
-int driveBase = 50;
-
 //ultraSonic
 const int leftSonicPins[] = {32,33}; //{trig,echo}
 const int frontSonicPins[] = {52,53};
@@ -65,7 +62,6 @@ const int rightSonicPins[] = {30,31};
 int prevGyroError = 0;    
 int prevEncoderError = 0;
 int prevSonicError = 0;      
-int prevDriveError = 0;
 int prevTurnError = 0;
 int prevWallError = 0;
 
@@ -84,10 +80,6 @@ const double sD = 15;
 const double wP = 2;
 const double wI = 0;    
 const double wD = 7.5;
-
-const double dP = 20;
-const double dI = 0;    
-const double dD = 80;
  
 const double tP = 1;
 const double tI = 0;    

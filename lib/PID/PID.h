@@ -11,8 +11,6 @@ class PID{
 
         int getWallCorrection(int err);
 
-        int getDriveCorrection(int err);
-
         int getTurnCorrection(int err);
         
     private:
