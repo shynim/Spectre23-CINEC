@@ -22,6 +22,11 @@ extern int stopDelay;
 extern const int leftEncoderPins[];
 extern const int rightEncoderPins[];
 
+extern unsigned long leftEncoder;
+extern unsigned long rightEncoder;
+extern unsigned long encoderLeftCount;
+extern unsigned long encoderRightCount;
+
 //Speeds
 extern int gyroBase;
 extern int gyroMax;

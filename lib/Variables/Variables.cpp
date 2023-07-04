@@ -34,7 +34,7 @@ int state = 0;
 
 //motorDriver
 const int leftPins[] = {6, 9, 8};
-const int rightPins[] = {7, 11, 10};
+const int rightPins[] = {7, 10, 11};
 
 int stopDelay = 2000;
 
@@ -42,13 +42,18 @@ int stopDelay = 2000;
 const int leftEncoderPins[] = {2,3};
 const int rightEncoderPins[] = {18,19};
 
+unsigned long leftEncoder = 0;
+unsigned long rightEncoder = 0;
+unsigned long encoderLeftCount = 0;
+unsigned long encoderRightCount = 0;
+
 //Speeds
 int gyroBase = 60;
 int gyroMax = 110;
 
-int sonicRightBase = 55;
-int sonicLeftBase = 50;
-int correctionMax = 15;
+int sonicRightBase = 110;
+int sonicLeftBase = 110;
+int correctionMax = 25;
 
 int turnMax = 80;
 int turnBase = 60;
@@ -73,9 +78,9 @@ const double eP = 0.1;
 const double eI = 0;
 const double eD = 1;
 
-const double sP = 4;   
+const double sP = 8;   
 const double sI = 0;    
-const double sD = 15;
+const double sD = 25;
 
 const double wP = 2;
 const double wI = 0;    

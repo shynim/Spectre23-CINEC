@@ -6,16 +6,12 @@
 #include <Gyro.h>
 #include <Sonic.h>
 #include <string.h>
-#include <Encoder.h>
 
 Cell currentCell = {4,0};
 
 MotorDriver driver;
 PID pid;
 FloodFill floodFill;
-
-Encoder left(leftEncoderPins[0],leftEncoderPins[1]);
-Encoder right(rightEncoderPins[1],rightEncoderPins[1]);
 
 Sonic leftSonic(leftSonicPins[0],leftSonicPins[1],maxDistance);
 Sonic frontSonic(frontSonicPins[0],frontSonicPins[1],maxDistance);
@@ -99,11 +95,63 @@ String mazeReverse(String maze){
 
 void goStraight(){
 
-    int errEncoder = left.read() - right.read();
-    int correction = pid.getEncoderCorrection(errEncoder);
-    driver.applyEncoderPid(correction);
+    // int errEncoder = left.read() - right.read();
+    // int correction = pid.getEncoderCorrection(errEncoder);
+    // driver.applyEncoderPid(correction);
 
-    //driver.forward(sonicLeftBase,sonicRightBase);
+    driver.forward(sonicLeftBase,sonicRightBase);
+}
+
+void cellStart(){
+    encoderLeftCount = 0;
+    encoderRightCount = 0;
+    leftEncoder = 0;
+    rightEncoder = 0;
+
+    encoderRightCount = encoderRightCount + 200;
+    encoderLeftCount = encoderLeftCount + 200;
+    int rightBase = 70;
+    int leftBase = 70;
+
+    while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
+        int dif = leftEncoder - encoderLeftCount + 200;
+        rightBase = 90 + int(dif/10);
+        leftBase = 90 + int(dif/20);
+        driver.forward(leftBase, rightBase);
+
+        Serial.print(leftEncoder);
+        Serial.print("  ");
+        Serial.print(rightEncoder);
+        Serial.println();
+    }
+
+}
+
+void cellBrake(){
+    encoderLeftCount = 0;
+    encoderRightCount = 0;
+    leftEncoder = 0;
+    rightEncoder = 0;
+    
+    encoderRightCount = encoderRightCount + 200;
+    encoderLeftCount = encoderLeftCount + 200;
+    int rightBase = 110;
+    int leftBase = 110;
+
+    while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
+        int dif = leftEncoder - encoderLeftCount + 200;
+        rightBase = 110 - int(dif/5);
+        leftBase = 110 - int(dif/5);
+        driver.forward(leftBase, rightBase);
+
+        Serial.print(leftEncoder);
+        Serial.print("  ");
+        Serial.print(rightEncoder);
+        Serial.println();
+    }
+
+    driver.stop();
+    
 }
 
 void wallFollow(){
@@ -181,27 +229,21 @@ void wallFollow(){
 
 void moveOneCell(){
     
-    int initDistance = frontSonic.readDistance();
-    int stableTime = 0;
+    cellStart();
 
-    int setPointSonic = sideGap;
-    int setPoint = initDistance - cellDistance; //swap if going backwards
+    encoderLeftCount = 0;
+    encoderRightCount = 0;
+    leftEncoder = 0;
+    rightEncoder = 0;
 
-    while(stableTime <= setTime){
-        int errSonic = setPointSonic - rightSonic.readDistance();
-        int correctionSonic = pid.getSonicCorrection(errSonic);
+    encoderLeftCount = encoderLeftCount + 700;
+    encoderRightCount = encoderRightCount + 700;  
 
-        int err = setPoint - frontSonic.readDistance();
-        int correction = pid.getDriveCorrection(err);
-
-        driver.applySonicDrivePid(correction * -1);
-        driver.applySonicPid(correctionSonic * -1);
-
-        if(err == 0){
-            stableTime++;
-        }
+    while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
+        wallFollow();
     }
-    driver.stop();
+
+    cellBrake();
 
     currentCell = getCurrentCell(orientationKey);
 }
@@ -217,15 +259,11 @@ void autoPosition(){
             int errSonic = setPointSonic - rightSonic.readDistance();
             int correctionSonic = pid.getSonicCorrection(errSonic);
 
-            int err = setPoint - frontSonic.readDistance();
-            int correction = pid.getDriveCorrection(err);
+            //int err = setPoint - frontSonic.readDistance();
+            //int correction = pid.getDriveCorrection(err);
 
-            driver.applySonicDrivePid(correction * -1);
+            //driver.applySonicDrivePid(correction * -1);
             driver.applySonicPid(correctionSonic * -1);
-
-            if(err == 0){
-                stableTime++;
-            }
         }
         driver.stop();    
     }
@@ -266,15 +304,33 @@ bool junctionFound(){
     return !leftSonic.wallFound() || !rightSonic.wallFound();
 }
 
+void countLeftOut1(){
+    leftEncoder += 1;
+}
+void countRightOut1(){
+    rightEncoder += 1;
+}
+
 void spectreSetup(){
     driver.init(const_cast<int *>(leftPins), const_cast<int *>(rightPins));
+
+    pinMode(leftEncoderPins[0], INPUT);
+    pinMode(leftEncoderPins[1], INPUT);
+    pinMode(rightEncoderPins[0], INPUT);
+    pinMode(rightEncoderPins[1], INPUT);
+
+    attachInterrupt(digitalPinToInterrupt(leftEncoderPins[0]), countLeftOut1, RISING);
+    attachInterrupt(digitalPinToInterrupt(leftEncoderPins[1]), countLeftOut1, RISING);
+    attachInterrupt(digitalPinToInterrupt(rightEncoderPins[0]), countRightOut1, RISING);
+    attachInterrupt(digitalPinToInterrupt(rightEncoderPins[1]), countRightOut1, RISING);
+
     pinMode(LED_BUILTIN,OUTPUT);
 }
 
 void spectreLoop(){
         
-    while(true){
-        updateWall(); //left hand rule
+    while(true){ //left hand rule
+        updateWall(); 
         //if(getColour() == 'r'){
             end = currentCell;
             autoPosition();
@@ -386,7 +442,15 @@ void setup(){
 }
 
 void loop(){ 
-    
-    wallFollow();
+    moveOneCell();
+    driver.stop();
+    delay(3000);
 
+    // driver.forward(1000);
+    
+    // Serial.print(leftEncoder);
+    // Serial.print("  ");
+    // Serial.print(rightEncoder);
+    // Serial.println();
+    
 }
