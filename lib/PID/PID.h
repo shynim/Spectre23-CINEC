@@ -9,6 +9,8 @@ class PID{
 
         int getSonicCorrection(int err);
 
+        int getDriveCorrection(int err);
+
         int getWallCorrection(int err);
 
         int getTurnCorrection(int err);

@@ -36,7 +36,9 @@ extern int sonicLeftBase;
 extern int correctionMax;
 
 extern int turnMax;
-extern int turnBase;
+extern int turnRightBase;
+extern int turnLeftBase;
+
 
 //ultraSonic
 extern const int leftSonicPins[]; //{trig,echo}

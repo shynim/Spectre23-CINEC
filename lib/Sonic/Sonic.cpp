@@ -9,5 +9,7 @@ int Sonic::readDistance(){
 
 bool Sonic::wallFound(){
     int distance = readDistance();
-    return distance < sideGap ? true:false;
+    return distance < 10
+    
+     && distance != 0 ? true:false;
 }

@@ -9,9 +9,9 @@ class MotorDriver{
         
         void backward(int speed);
 
-        void turnLeft(int speed);
+        void turnLeft(int leftSpeed, int rightSpeed);
         
-        void turnRight(int speed);
+        void turnRight(int leftSpeed, int rightSpeed);
 
         void reverseRight(int speed);
 
@@ -23,15 +23,14 @@ class MotorDriver{
 
         void stop();
 
-        void applyGyroPid(int correction);
+        void brake();
 
         void applyEncoderPid(int correction);
-
-        void applyGyroTurnPid(int correction);
 
         void applyWallPid(int correction);
 
         void applySonicPid(int correction);
+        
         
     private:
         int leftPWM;

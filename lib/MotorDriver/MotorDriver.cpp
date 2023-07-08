@@ -50,24 +50,24 @@ void MotorDriver::backward(int speed) {
     analogWrite(rightPWM, speed);
 }
 
-void MotorDriver::turnLeft(int speed) {
+void MotorDriver::turnLeft(int leftSpeed, int rightSpeed) {
     digitalWrite(leftDirection[0], LOW);
     digitalWrite(leftDirection[1], HIGH);
     digitalWrite(rightDirection[0], HIGH);
     digitalWrite(rightDirection[1], LOW);
 
-    analogWrite(leftPWM, speed);
-    analogWrite(rightPWM, speed);
+    analogWrite(leftPWM, leftSpeed);
+    analogWrite(rightPWM, rightSpeed);
 }
 
-void MotorDriver::turnRight(int speed) {
+void MotorDriver::turnRight(int leftSpeed, int rightSpeed) {
     digitalWrite(leftDirection[0], HIGH);
     digitalWrite(leftDirection[1], LOW);
     digitalWrite(rightDirection[0], LOW);
     digitalWrite(rightDirection[1], HIGH);
 
-    analogWrite(leftPWM, speed);
-    analogWrite(rightPWM, speed);
+    analogWrite(leftPWM, leftSpeed);
+    analogWrite(rightPWM, rightSpeed);
 }
 void MotorDriver::reverseRight(int speed) {
     digitalWrite(leftDirection[0], LOW);
@@ -109,28 +109,13 @@ void MotorDriver::backward(int leftSpeed, int rightSpeed) {
     analogWrite(rightPWM, rightSpeed);
 }
 
-void MotorDriver::applyGyroPid(int correction){
-    int leftSpeed = abs(gyroBase) + correction;
-    int rightSpeed = abs(gyroBase) - correction;
+void MotorDriver::brake(){
+    digitalWrite(leftDirection[0], HIGH);
+    digitalWrite(leftDirection[1], HIGH);
+    digitalWrite(rightDirection[0], HIGH);
+    digitalWrite(rightDirection[1], HIGH);
 
-    if (leftSpeed < 0) {
-        leftSpeed = 0;
-    }
-
-    if (rightSpeed < 0) {
-        rightSpeed = 0;
-    }
-
-    if (leftSpeed >= gyroMax) {
-        leftSpeed = gyroMax;
-    }
-
-    if (rightSpeed >= gyroMax) {
-        rightSpeed = gyroMax;
-    }
-
-    gyroBase >= 0 ? forward(leftSpeed, rightSpeed):backward(rightSpeed, leftSpeed);
-
+    delay(100);
 }
 
 void MotorDriver::applyEncoderPid(int correction){
@@ -144,31 +129,6 @@ void MotorDriver::applyEncoderPid(int correction){
     int rightSpeed = abs(sonicRightBase) - correction;
 
     forward(leftSpeed, rightSpeed);
-}
-
-void MotorDriver::applyGyroTurnPid(int correction){
-    if(correction >= turnMax){
-        correction = turnMax;
-    }
-
-    if(correction <= turnBase && correction >= 0){
-        correction = turnBase;
-    }
-
-    if(correction <= -turnMax){
-        correction = -turnMax;
-    }
-
-    if(correction >= -turnBase && correction <= 0){
-        correction = -turnBase;
-    }
-
-    if(correction >= 0){
-        turnRight(correction);
-    }else{
-        turnLeft(-correction);
-    }
-    
 }
 
 void MotorDriver::applyWallPid(int correction){

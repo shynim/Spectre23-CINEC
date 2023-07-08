@@ -85,3 +85,13 @@ bool FloodFill::isCellAccesible(Cell parentCell, Cell childCell){
     }
     return false; 
 }
+
+void FloodFill::clearGrid(){
+
+    for (int i = 0; i < mazeSize; i++) {
+        for (int j = 0; j < mazeSize; j++) {
+            grid[i][j] = 0;
+        }
+    }
+
+}

@@ -36,7 +36,7 @@ int state = 0;
 const int leftPins[] = {6, 9, 8};
 const int rightPins[] = {7, 10, 11};
 
-int stopDelay = 2000;
+int stopDelay = 1000;
 
 //encoder
 const int leftEncoderPins[] = {2,3};
@@ -51,16 +51,20 @@ unsigned long encoderRightCount = 0;
 int gyroBase = 60;
 int gyroMax = 110;
 
+int driveMax = 100;
+int driveBase = 0;
+
 int sonicRightBase = 110;
 int sonicLeftBase = 110;
-int correctionMax = 25;
+int correctionMax = 35;
 
-int turnMax = 80;
-int turnBase = 60;
+int turnMax = 120;
+int turnRightBase = 110;
+int turnLeftBase = 110;
 
 //ultraSonic
 const int leftSonicPins[] = {32,33}; //{trig,echo}
-const int frontSonicPins[] = {52,53};
+const int frontSonicPins[] = {34,35};
 const int rightSonicPins[] = {30,31};
 
 //PID
@@ -74,17 +78,17 @@ const double gP = 0.137;
 const double gI = 0;    
 const double gD = 1.9;
 
-const double eP = 0.1;
+const double eP = 0.4;
 const double eI = 0;
-const double eD = 1;
+const double eD = 2;
 
-const double sP = 8;   
+const double sP = 10;   
 const double sI = 0;    
-const double sD = 25;
+const double sD = 50; //25
 
-const double wP = 2;
+const double wP = 5;
 const double wI = 0;    
-const double wD = 7.5;
+const double wD = 25;
  
 const double tP = 1;
 const double tI = 0;    
