@@ -62,7 +62,7 @@ bool areCellsEqual(const Cell& p1, const Cell& p2) {
     return (p1.x == p2.x) && (p1.y == p2.y);
 }
 
-String maze = "";
+String maze = "LSLLLRRBLLRSRLLBSRLLRRSBLBLLLRLBSLLRLLRLRLBS";
 const String mappings[2][6] = {{"LBL", "LBS", "RBL", "SBL", "SBS", "LBR"},
                                {"S",   "R",   "B",   "R",   "B",   "B"}};
 
@@ -206,13 +206,13 @@ void cellBrake(){
         leftEncoder = 0;
         rightEncoder = 0;
         
-        encoderRightCount = encoderRightCount + 100;
-        encoderLeftCount = encoderLeftCount + 100;
+        encoderRightCount = encoderRightCount + 200;
+        encoderLeftCount = encoderLeftCount + 200;
 
         while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
-            int dif = leftEncoder - encoderLeftCount + 100;
-            sonicRightBase = 110 - int(dif/2.5);
-            sonicLeftBase = 110 - int(dif/2.5);
+            int dif = leftEncoder - encoderLeftCount + 200;
+            sonicRightBase = 110 - int(dif/5);
+            sonicLeftBase = 110 - int(dif/5);
             wallFollow();
 
             Serial.print(leftEncoder);
@@ -233,6 +233,28 @@ void cellBrake(){
 
     }
     
+}
+
+void autoPosition(){
+    int stableTime = 0;
+
+    int setPoint = frontGap; //swap if going backwards
+
+    while(stableTime <= setTime){
+
+        int err = setPoint - frontSonic.readDistance();
+        int correction = pid.getDriveCorrection(err);
+        driver.applySonicDrivePid(correction * -1);
+
+        int errEncoder = leftEncoder - rightEncoder;
+        int correctionEncoder = pid.getEncoderCorrection(errEncoder);
+        driver.applyEncoderPid(correctionEncoder);
+        
+        stableTime++;
+    }
+    driver.stop();    
+    sonicLeftBase = 110;
+    sonicRightBase = 110;
 }
 
 void moveOneCell(){
@@ -256,31 +278,14 @@ void moveOneCell(){
         Serial.println();
     }
 
-    cellBrake();
-
+    if(frontSonic.readDistance() == 0){
+        cellBrake();
+    }else{
+        autoPosition();
+    }
+    
     
     currentCell = getCurrentCell(orientationKey);
-}
-
-void autoPosition(){
-    // if(frontSonic.wallFound()){
-    //     int stableTime = 0;
-
-    //     int setPointSonic = sideGap;
-    //     int setPoint = frontGap; //swap if going backwards
-
-    //     while(stableTime <= setTime){
-    //         int errSonic = setPointSonic - rightSonic.readDistance();
-    //         int correctionSonic = pid.getSonicCorrection(errSonic);
-
-    //         //int err = setPoint - frontSonic.readDistance();
-    //         //int correction = pid.getDriveCorrection(err);
-
-    //         //driver.applySonicDrivePid(correction * -1);
-    //         driver.applySonicPid(correctionSonic * -1);
-    //     }
-    //     driver.stop();    
-    // }
 }
 
 void turn90(char dir){
@@ -422,7 +427,7 @@ bool junctionFound(){
 }
 
 bool deadEnd(){
-    return leftSonic.wallFound() && rightSonic.wallFound() && leftSonic.wallFound();
+    return leftSonic.wallFound() && rightSonic.wallFound() && frontSonic.wallFound();
 }
 
 void countLeftOut1(){
@@ -507,6 +512,7 @@ void spectreLoop(){
 
     } //left hand rule end
     
+    int i = 0;
     while(true){
         if(areCellsEqual(currentCell,start)){ //coming back to start
             turnBack();
@@ -516,8 +522,7 @@ void spectreLoop(){
         moveOneCell();
 
         if(junctionFound() || deadEnd()){
-            char turn = maze.charAt(0);
-            maze.remove(0);
+            char turn = maze[i++];
 
             switch (turn)
             {
@@ -573,6 +578,8 @@ void setup(){
 }
 
 void loop(){ 
- 
+    end = {5, 3};
+    //Serial.print(mazeReverse(mazeShort(maze)));
     
+    spectreLoop();
 }

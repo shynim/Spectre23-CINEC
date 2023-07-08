@@ -36,23 +36,20 @@ int state = 0;
 const int leftPins[] = {6, 9, 8};
 const int rightPins[] = {7, 10, 11};
 
-int stopDelay = 1000;
+int stopDelay = 500;
 
 //encoder
 const int leftEncoderPins[] = {2,3};
 const int rightEncoderPins[] = {18,19};
 
-unsigned long leftEncoder = 0;
-unsigned long rightEncoder = 0;
+unsigned volatile long leftEncoder = 0;
+unsigned volatile long rightEncoder = 0;
 unsigned long encoderLeftCount = 0;
 unsigned long encoderRightCount = 0;
 
 //Speeds
 int gyroBase = 60;
 int gyroMax = 110;
-
-int driveMax = 100;
-int driveBase = 0;
 
 int sonicRightBase = 110;
 int sonicLeftBase = 110;
@@ -61,6 +58,9 @@ int correctionMax = 35;
 int turnMax = 120;
 int turnRightBase = 110;
 int turnLeftBase = 110;
+
+int driveMax = 110;
+int driveBase = 70;
 
 //ultraSonic
 const int leftSonicPins[] = {32,33}; //{trig,echo}
@@ -73,6 +73,7 @@ int prevEncoderError = 0;
 int prevSonicError = 0;      
 int prevTurnError = 0;
 int prevWallError = 0;
+int prevDriveError = 0;
 
 const double gP = 0.137;
 const double gI = 0;    
@@ -86,6 +87,10 @@ const double sP = 10;
 const double sI = 0;    
 const double sD = 50; //25
 
+const double dP = 20;
+const double dI = 0;    
+const double dD = 80;
+
 const double wP = 5;
 const double wI = 0;    
 const double wD = 25;
@@ -97,7 +102,7 @@ const double tD = 1;
 //Maze
 const int cellDistance = 23; //cm
 const int sideGap = 7;
-const int frontGap = 5;
+const int frontGap = 4;
 
 const int maxDistance = 20;
 

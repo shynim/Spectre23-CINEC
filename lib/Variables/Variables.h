@@ -39,6 +39,8 @@ extern int turnMax;
 extern int turnRightBase;
 extern int turnLeftBase;
 
+extern int driveMax;
+extern int driveBase;
 
 //ultraSonic
 extern const int leftSonicPins[]; //{trig,echo}
@@ -51,6 +53,7 @@ extern int prevEncoderError;
 extern int prevSonicError;      
 extern int prevTurnError;
 extern int prevWallError;
+extern int prevDriveError;
 
 extern const double gP;
 extern const double gI;    
@@ -71,6 +74,10 @@ extern const double tD;
 extern const double wP;
 extern const double wI;    
 extern const double wD;
+
+extern const double dP;
+extern const double dI;    
+extern const double dD;
  
 extern const int cellDistance; //cm
 extern const int sideGap;

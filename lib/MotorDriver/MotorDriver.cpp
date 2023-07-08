@@ -119,6 +119,7 @@ void MotorDriver::brake(){
 }
 
 void MotorDriver::applyEncoderPid(int correction){
+    
     if(correction > correctionMax){
         correction = correctionMax;
     }else if(correction < correctionMax * -1){
@@ -128,7 +129,7 @@ void MotorDriver::applyEncoderPid(int correction){
     int leftSpeed = abs(sonicLeftBase) + correction;
     int rightSpeed = abs(sonicRightBase) - correction;
 
-    forward(leftSpeed, rightSpeed);
+    sonicLeftBase >= 0 ? forward(leftSpeed, rightSpeed) : backward(rightSpeed, leftSpeed);
 }
 
 void MotorDriver::applyWallPid(int correction){
@@ -143,6 +144,25 @@ void MotorDriver::applyWallPid(int correction){
 
     forward(leftSpeed, rightSpeed);
 }
+
+void MotorDriver::applySonicDrivePid(int correction){
+    if(correction >= driveMax){
+        correction = driveMax;
+    }
+    if(correction <= -driveMax){
+        correction = -driveMax;
+    }
+    
+    if(correction <= driveBase && correction >= 0){
+        correction = driveBase;
+    }
+    if(correction >= -driveBase && correction <= 0){
+        correction = -driveBase;
+    }
+    sonicRightBase = correction;
+    sonicLeftBase = correction;
+}
+
 
 void MotorDriver::applySonicPid(int correction){
     if(correction > correctionMax){

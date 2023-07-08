@@ -30,6 +30,8 @@ class MotorDriver{
         void applyWallPid(int correction);
 
         void applySonicPid(int correction);
+
+        void applySonicDrivePid(int correction);
         
         
     private:
