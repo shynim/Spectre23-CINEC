@@ -15,12 +15,21 @@ Sonic leftSonic(leftSonicPins[0],leftSonicPins[1],maxDistance);
 Sonic frontSonic(frontSonicPins[0],frontSonicPins[1],maxDistance);
 Sonic rightSonic(rightSonicPins[0],rightSonicPins[1],maxDistance);
 
-Cell currentCell = {mazeSize - 1,0};
-
 Cell end;
 const Cell start = {mazeSize - 1,0};
 
+Cell currentCell = start;
+
+void buzz()
+{
+    digitalWrite(buzzer, HIGH);
+    delay(200);
+    digitalWrite(buzzer, LOW);
+    delay(200);
+}
+
 Cell getCurrentCell(int orientationKey){
+    
     if(orientationKey == 0){
         return {currentCell.x-1,currentCell.y};
     }
@@ -54,7 +63,7 @@ Cell getCell(char dir){
         cell.x = currentCell.x+1;
         cell.y = currentCell.y;
     }
-    if(cell.x < 6 && cell.x >= 0 && cell.y < 6 && cell.y >= 0){return cell;}
+    if(cell.x < mazeSize && cell.x >= 0 && cell.y < mazeSize && cell.y >= 0){return cell;}
     return {-1,-1};
 }
 
@@ -238,7 +247,7 @@ void cellBrake(){
 void autoPosition(){
     int stableTime = 0;
 
-    int setPoint = frontGap; //swap if going backwards
+    int setPoint = frontGap; 
 
     while(stableTime <= setTime){
 
@@ -252,6 +261,7 @@ void autoPosition(){
         
         stableTime++;
     }
+
     driver.stop();    
     sonicLeftBase = 110;
     sonicRightBase = 110;
@@ -284,8 +294,8 @@ void moveOneCell(){
         autoPosition();
     }
     
-    
     currentCell = getCurrentCell(orientationKey);
+    
 }
 
 void turn90(char dir){
@@ -445,6 +455,8 @@ void spectreSetup(){
     pinMode(rightEncoderPins[0], INPUT);
     pinMode(rightEncoderPins[1], INPUT);
 
+    pinMode(buzzer,OUTPUT);
+
     attachInterrupt(digitalPinToInterrupt(leftEncoderPins[0]), countLeftOut1, RISING);
     attachInterrupt(digitalPinToInterrupt(leftEncoderPins[1]), countLeftOut1, RISING);
     attachInterrupt(digitalPinToInterrupt(rightEncoderPins[0]), countRightOut1, RISING);
@@ -485,6 +497,18 @@ void loopFloodFill(Cell end){
 void spectreLoop(){
         
     while(true){ //left hand rule
+
+        // for(int i = 0;i < currentCell.x; i++){
+        //     buzz();
+        // }
+        // digitalWrite(buzzer, HIGH);
+        // delay(1000);
+        // digitalWrite(buzzer, LOW);
+        // delay(200);
+        // for(int i = 0;i < currentCell.y; i++){
+        //     buzz();
+        // }
+
         updateWall(); 
         if(areCellsEqual(currentCell, end)){
             end = currentCell;
@@ -508,7 +532,6 @@ void spectreLoop(){
             turnBack();
         }
         moveOneCell();
-        currentCell = getCurrentCell(orientationKey);
 
     } //left hand rule end
     

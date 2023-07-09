@@ -8,8 +8,16 @@ int Sonic::readDistance(){
 }
 
 bool Sonic::wallFound(){
-    int distance = readDistance();
-    return distance < 10
-    
-     && distance != 0 ? true:false;
+    int i = 10;
+    int found = 0;
+
+    while(i-- >= 0){
+        int distance = readDistance();
+        if(distance < 10 && distance != 0){
+            found++;
+        }else{
+            found--;
+        }
+    }
+    return found > 0 ? true:false;
 }

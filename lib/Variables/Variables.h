@@ -1,6 +1,8 @@
 #ifndef ROBOFEST2023_VARIABLES_H
 #define ROBOFEST2023_VARIABLES_H
 
+#define buzzer 53
+
 //floodFill
 #define mazeSize 6
 
@@ -22,8 +24,8 @@ extern int stopDelay;
 extern const int leftEncoderPins[];
 extern const int rightEncoderPins[];
 
-extern unsigned long leftEncoder;
-extern unsigned long rightEncoder;
+extern unsigned volatile long leftEncoder;
+extern unsigned volatile long rightEncoder;
 extern unsigned long encoderLeftCount;
 extern unsigned long encoderRightCount;
 
