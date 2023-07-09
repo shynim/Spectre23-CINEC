@@ -36,7 +36,7 @@ int state = 0;
 const int leftPins[] = {6, 9, 8};
 const int rightPins[] = {7, 10, 11};
 
-int stopDelay = 500;
+int stopDelay = 1000;
 
 //encoder
 const int leftEncoderPins[] = {2,3};
@@ -108,6 +108,6 @@ const int maxDistance = 20;
 
 //Orientation
 char orientation[4] = {'f', 'r', 'b', 'l'};
-int orientationKey = 0;
+int orientationKey = 1;
 
 int setTime = 40;

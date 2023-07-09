@@ -21,3 +21,4 @@ bool Sonic::wallFound(){
     }
     return found > 0 ? true:false;
 }
+
