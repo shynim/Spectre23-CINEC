@@ -136,6 +136,15 @@ bool wallRight(){
 
 }
 
+bool junctionFound(){
+    return !wallLeft() || !wallRight();
+}
+
+bool deadEnd(){
+    return wallLeft() && wallRight() && wallFront();
+}
+
+int mazeIndex = 0;
 bool shouldBrake(){
     if(mode == 1){
         
@@ -143,6 +152,18 @@ bool shouldBrake(){
             return false;
         }else{
            return true;
+        }
+
+    }else if(mode == 2){
+
+        if(junctionFound()){
+            if(maze[mazeIndex] == 'S'){
+                return false;
+            }else{
+                return true;
+            }
+        }else{
+            return false;
         }
 
     }else if(mode == 3){
@@ -265,13 +286,13 @@ void cellStart(){
     leftEncoder = 0;
     rightEncoder = 0;
 
-    encoderRightCount = encoderRightCount + 100;
-    encoderLeftCount = encoderLeftCount + 100;
+    encoderRightCount = encoderRightCount + 200;
+    encoderLeftCount = encoderLeftCount + 200;
 
     while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
-        int dif = leftEncoder - encoderLeftCount + 100;
-        sonicRightBase = 90 + int(dif/10);
-        sonicLeftBase = 90 + int(dif/10);
+        int dif = leftEncoder - encoderLeftCount + 200;
+        sonicRightBase = 100 + int(dif/20);
+        sonicLeftBase = 100 + int(dif/20);
         wallFollow();
 
     }
@@ -290,21 +311,24 @@ void cellBrake(){
 
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
         int dif = leftEncoder - encoderLeftCount + 100;
-        sonicRightBase = 110 - int(dif/5);
-        sonicLeftBase = 110 - int(dif/5);
+        sonicRightBase = 120 - int(dif/5);
+        sonicLeftBase = 120 - int(dif/5);
         wallFollow();
 
     }
 
-    sonicLeftBase = 110;
-    sonicRightBase = 110;
+    sonicLeftBase = 120;
+    sonicRightBase = 120;
     driver.stop();
     
 }
 
 void autoPosition(){
     int stableTime = 0;
-
+    encoderLeftCount = 0;
+    encoderRightCount = 0;
+    leftEncoder = 0;
+    rightEncoder = 0;
     int setPoint = frontGap; 
 
     while(stableTime <= setTime){
@@ -324,8 +348,8 @@ void autoPosition(){
     }
 
     driver.stop();    
-    sonicLeftBase = 110;
-    sonicRightBase = 110;
+    sonicLeftBase = 120;
+    sonicRightBase = 120;
 }
 
 boolean braked = true;
@@ -340,8 +364,8 @@ void moveOneCell(){
         leftEncoder = 0;
         rightEncoder = 0;
 
-        encoderRightCount = encoderRightCount + 100;
-        encoderLeftCount = encoderLeftCount + 100;
+        encoderRightCount = encoderRightCount + 200;
+        encoderLeftCount = encoderLeftCount + 200;
 
         while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
             wallFollow();
@@ -354,8 +378,8 @@ void moveOneCell(){
     leftEncoder = 0;
     rightEncoder = 0;
 
-    encoderLeftCount = encoderLeftCount + 700;
-    encoderRightCount = encoderRightCount + 700;  
+    encoderLeftCount = encoderLeftCount + 600;
+    encoderRightCount = encoderRightCount + 600;  
 
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
         wallFollow();
@@ -374,7 +398,6 @@ void moveOneCell(){
     }
     startCounting = false;
     
-
     if(!wallFront()){
         if(shouldBrake()){
             cellBrake();
@@ -400,7 +423,7 @@ void moveOneCell(){
         braked = true;
     }
     
-    
+
 }
 
 void turn90(char dir){
@@ -414,8 +437,8 @@ void turn90(char dir){
 
         int dif = leftEncoder - encoderLeftCount + 100;
 
-        turnRightBase = int(70+110/(1+pow(2.73,((50-dif)*0.05))));
-        turnLeftBase = int(70+110/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(70+60/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(70+60/(1+pow(2.73,((50-dif)*0.05))));
         dir == 'r' ? driver.turnRight(turnLeftBase, turnRightBase) : driver.turnLeft(turnLeftBase, turnRightBase);
 
         Serial.print(leftEncoder);
@@ -424,8 +447,8 @@ void turn90(char dir){
         Serial.println();
         
     }
-    turnRightBase=180;
-    turnLeftBase=170;
+    turnRightBase=130;
+    turnLeftBase=120;
     encoderRightCount= encoderRightCount + 100;
     encoderLeftCount= encoderLeftCount + 100;
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
@@ -437,13 +460,13 @@ void turn90(char dir){
         Serial.print(rightEncoder);
         Serial.println();
     }
-    encoderRightCount= encoderRightCount + 100;
-    encoderLeftCount= encoderLeftCount + 100;
+    encoderRightCount= encoderRightCount + 120;
+    encoderLeftCount= encoderLeftCount + 120;
     while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
     {
         int dif = leftEncoder - encoderLeftCount + 100;
-        turnRightBase = int(180-110/(1+pow(2.73,((50-dif)*0.05))));
-        turnLeftBase = int(170-110/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(130-60/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(120-60/(1+pow(2.73,((50-dif)*0.05))));
         dir == 'r' ? driver.turnRight(turnLeftBase, turnRightBase) : driver.turnLeft(turnLeftBase, turnRightBase);
 
         Serial.print(leftEncoder);
@@ -463,8 +486,8 @@ void turn90(char dir){
         }
     } 
 
-    turnLeftBase = 170;
-    turnRightBase = 180;
+    turnLeftBase = 120;
+    turnRightBase = 130;
     encoderLeftCount = 0;
     encoderRightCount = 0;
     leftEncoder = 0;
@@ -482,8 +505,8 @@ void turnBack(){
     while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
     {
         int dif = leftEncoder - encoderLeftCount + 100;
-        turnRightBase = int(70+110/(1+pow(2.73,((50-dif)*0.05))));
-        turnLeftBase = int(70+110/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(70+60/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(70+60/(1+pow(2.73,((50-dif)*0.05))));
         driver.turnRight(turnLeftBase, turnRightBase);
 
         Serial.print(leftEncoder);
@@ -491,10 +514,10 @@ void turnBack(){
         Serial.print(rightEncoder);
         Serial.println();
     }
-    turnRightBase=180;
-    turnLeftBase=170;
-    encoderRightCount= encoderRightCount + 480;
-    encoderLeftCount= encoderLeftCount + 480;
+    turnRightBase=130;
+    turnLeftBase=120;
+    encoderRightCount= encoderRightCount + 550;
+    encoderLeftCount= encoderLeftCount + 550;
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
     {
         driver.turnRight(turnLeftBase, turnRightBase);
@@ -509,8 +532,8 @@ void turnBack(){
     while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
     {
         int dif = leftEncoder - encoderLeftCount + 100;
-        turnRightBase = int(180-110/(1+pow(2.73,((50-dif)*0.05))));
-        turnLeftBase = int(170-110/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(130-60/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(130-60/(1+pow(2.73,((50-dif)*0.05))));
         driver.turnRight(turnLeftBase, turnRightBase);
 
         Serial.print(leftEncoder);
@@ -525,8 +548,8 @@ void turnBack(){
         orientationKey = orientationKey - 4;
     }
 
-    turnLeftBase = 170;
-    turnRightBase = 180;
+    turnLeftBase = 120;
+    turnRightBase = 130;
     encoderLeftCount = 0;
     encoderRightCount = 0;
     leftEncoder = 0;
@@ -541,14 +564,6 @@ void turnBack(){
 
 void updateWall(){
     floodFill.updateWall(currentCell,wallLeft(),wallFront(),wallRight(),orientation[orientationKey]);
-}
-
-bool junctionFound(){
-    return !wallLeft() || !wallRight();
-}
-
-bool deadEnd(){
-    return wallLeft() && wallRight() && wallFront();
 }
 
 void countLeftOut1(){
@@ -637,7 +652,6 @@ void spectreLoop(){
     } //left hand rule end
     
     mode = 2;
-    int i = 0;
     while(true){
     
         moveOneCell();
@@ -648,7 +662,7 @@ void spectreLoop(){
         }
 
         if(junctionFound() || deadEnd()){
-            char turn = maze[i++];
+            char turn = maze[mazeIndex++];
 
             switch (turn)
             {
@@ -697,7 +711,7 @@ void setup(){
 }
 
 void loop(){ 
-    end = {1, 0};
+    end = {5, 3};
     //Serial.print(mazeReverse(mazeShort(maze)));
     
     mazeStart();

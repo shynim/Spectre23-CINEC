@@ -36,7 +36,7 @@ int state = 0;
 const int leftPins[] = {6, 9, 8};
 const int rightPins[] = {7, 10, 11};
 
-int stopDelay = 500;
+int stopDelay = 200;
 
 //encoder
 const int leftEncoderPins[] = {2,3};
@@ -51,9 +51,9 @@ unsigned long encoderRightCount = 0;
 int gyroBase = 60;
 int gyroMax = 110;
 
-int sonicRightBase = 110;
-int sonicLeftBase = 110;
-int correctionMax = 35;
+int sonicRightBase = 120;
+int sonicLeftBase = 120;
+int correctionMax = 30;
 
 int turnMax = 120;
 int turnRightBase = 110;
