@@ -36,7 +36,7 @@ int state = 0;
 const int leftPins[] = {6, 9, 8};
 const int rightPins[] = {7, 10, 11};
 
-int stopDelay = 1000;
+int stopDelay = 500;
 
 //encoder
 const int leftEncoderPins[] = {2,3};
@@ -60,7 +60,7 @@ int turnRightBase = 110;
 int turnLeftBase = 110;
 
 int driveMax = 110;
-int driveBase = 70;
+int driveBase = 90;
 
 //ultraSonic
 const int leftSonicPins[] = {32,33}; //{trig,echo}
@@ -87,9 +87,9 @@ const double sP = 10;
 const double sI = 0;    
 const double sD = 50; //25
 
-const double dP = 20;
+const double dP = 60;
 const double dI = 0;    
-const double dD = 80;
+const double dD = 15;
 
 const double wP = 5;
 const double wI = 0;    
@@ -102,7 +102,7 @@ const double tD = 1;
 //Maze
 const int cellDistance = 23; //cm
 const int sideGap = 7;
-const int frontGap = 4;
+const int frontGap = 3;
 
 const int maxDistance = 20;
 
@@ -110,4 +110,4 @@ const int maxDistance = 20;
 char orientation[4] = {'f', 'r', 'b', 'l'};
 int orientationKey = 1;
 
-int setTime = 40;
+int setTime = 10;

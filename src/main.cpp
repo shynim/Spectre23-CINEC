@@ -145,6 +145,14 @@ bool shouldBrake(){
            return true;
         }
 
+    }else if(mode == 3){
+
+        Cell frontCell = getCell('f');
+        if(grid[frontCell.x][frontCell.y] == grid[currentCell.x][currentCell.y] - 1){
+            return false;
+        }else{
+            return true;
+        }
     }
 }
 
@@ -266,10 +274,6 @@ void cellStart(){
         sonicLeftBase = 90 + int(dif/10);
         wallFollow();
 
-        Serial.print(leftEncoder);
-        Serial.print("  ");
-        Serial.print(rightEncoder);
-        Serial.println();
     }
 
 }
@@ -313,7 +317,10 @@ void autoPosition(){
         int correctionEncoder = pid.getEncoderCorrection(errEncoder);
         driver.applyEncoderPid(correctionEncoder);
         
-        stableTime++;
+        if(err == 0){
+            stableTime++;
+        }
+        
     }
 
     driver.stop();    
@@ -321,10 +328,27 @@ void autoPosition(){
     sonicRightBase = 110;
 }
 
+boolean braked = true;
 void moveOneCell(){
     
-    cellStart();
+    currentCell = getCurrentCell(orientationKey);
+    if(braked){
+        cellStart();
+    }else{
+        encoderLeftCount = 0;
+        encoderRightCount = 0;
+        leftEncoder = 0;
+        rightEncoder = 0;
 
+        encoderRightCount = encoderRightCount + 100;
+        encoderLeftCount = encoderLeftCount + 100;
+
+        while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
+            wallFollow();
+
+        }
+    }
+    
     encoderLeftCount = 0;
     encoderRightCount = 0;
     leftEncoder = 0;
@@ -354,6 +378,7 @@ void moveOneCell(){
     if(!wallFront()){
         if(shouldBrake()){
             cellBrake();
+            braked = true;
         }else{
             encoderLeftCount = 0;
             encoderRightCount = 0;
@@ -367,14 +392,14 @@ void moveOneCell(){
                 wallFollow();
 
             }
+            braked = false;
         }
     }else{
 
         autoPosition();
-        buzz();
+        braked = true;
     }
     
-    currentCell = getCurrentCell(orientationKey);
     
 }
 
@@ -507,6 +532,11 @@ void turnBack(){
     leftEncoder = 0;
     rightEncoder = 0;
 
+    int temp = countLeft;
+    countLeft = countRight;
+    countRight = temp;
+    countFront = -10;
+
 }
 
 void updateWall(){
@@ -560,11 +590,11 @@ void loopFloodFill(Cell end){
             Cell rightCell = getCell('r');
             Cell backCell = getCell('b');
 
-            if(!areCellsEqual(leftCell,{-1,-1}) && grid[leftCell.x][leftCell.y] == manhattanDistance - 1 && !leftSonic.wallFound()){
+            if(!areCellsEqual(leftCell,{-1,-1}) && grid[leftCell.x][leftCell.y] == manhattanDistance - 1 && !wallLeft()){
                 turn90('l');
-            }else if(!areCellsEqual(frontCell,{-1,-1}) && grid[frontCell.x][frontCell.y] == manhattanDistance - 1 && !frontSonic.wallFound()){
+            }else if(!areCellsEqual(frontCell,{-1,-1}) && grid[frontCell.x][frontCell.y] == manhattanDistance - 1 && !wallFront()){
                 
-            }else if(!areCellsEqual(rightCell,{-1,-1}) && grid[rightCell.x][rightCell.y] == manhattanDistance - 1 && !rightSonic.wallFound()){
+            }else if(!areCellsEqual(rightCell,{-1,-1}) && grid[rightCell.x][rightCell.y] == manhattanDistance - 1 && !wallRight()){
                 turn90('r');
             }else if(!areCellsEqual(backCell,{-1,-1}) && grid[backCell.x][backCell.y] == manhattanDistance - 1){
                 turnBack();
@@ -606,14 +636,16 @@ void spectreLoop(){
 
     } //left hand rule end
     
+    mode = 2;
     int i = 0;
     while(true){
+    
+        moveOneCell();
+
         if(areCellsEqual(currentCell,start)){ //coming back to start
             turnBack();
             break;
         }
-
-        moveOneCell();
 
         if(junctionFound() || deadEnd()){
             char turn = maze[i++];
@@ -637,6 +669,8 @@ void spectreLoop(){
         }
 
     } //at start
+
+    mode = 3;
 
     while(true){
         loopFloodFill(end);
@@ -663,9 +697,11 @@ void setup(){
 }
 
 void loop(){ 
-    end = {3, 4};
+    end = {1, 0};
     //Serial.print(mazeReverse(mazeShort(maze)));
     
     mazeStart();
     spectreLoop();
+
+    
 }
