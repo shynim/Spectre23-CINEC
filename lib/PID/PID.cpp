@@ -2,17 +2,6 @@
 #include <Arduino.h>
 #include <Variables.h>
 
-int PID::getGyroCorrection(int error){
-    double p = error * gP;
-    double d = (error - prevGyroError) * gD;
-
-    prevGyroError = error;
-
-    int correction = (int)(p + d);
-
-    return correction;
-}
-
 int PID::getEncoderCorrection(int error){
     double p = error * eP;
     double d = (error - prevEncoderError) *eD;

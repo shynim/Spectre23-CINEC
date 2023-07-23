@@ -11,26 +11,38 @@ int grid[mazeSize][mazeSize] = {
 };
 
 int verticalWallGrid[mazeSize][mazeSize+1] = {
-    {1, 0, 0, 0, 1, 0, 1},   //   | | | | | | |
-    {1, 0, 0, 1, 1, 1, 1},   //   | | | | | | | 
-    {1, 0, 0, 1, 0, 1, 1},   //   | | | | | | |
-    {1, 0, 1, 1, 1, 0, 1},   //   | | | | | | |
-    {1, 0, 1, 0, 0, 1, 1},   //   | | | | | | |
-    {1, 0, 0, 1, 0, 0, 1}    //   | | | | | | |
+    {1, 0, 0, 0, 0, 0, 1},   //   | | | | | | |
+    {1, 0, 0, 0, 0, 0, 1},   //   | | | | | | | 
+    {1, 0, 0, 0, 0, 0, 1},   //   | | | | | | |
+    {1, 0, 0, 0, 0, 0, 1},   //   | | | | | | |
+    {1, 0, 0, 0, 0, 0, 1},   //   | | | | | | |
+    {1, 0, 0, 0, 0, 0, 1}    //   | | | | | | |
 };
 int horizontalWallGrid[mazeSize+1][mazeSize] = {
     {1, 1, 1, 1, 1, 1},    //  - - - - - -
-    {1, 1, 0, 0, 0, 0},    //  - - - - - -
-    {0, 1, 1, 0, 0, 0},    //  - - - - - -
-    {0, 1, 0, 0, 1, 0},    //  - - - - - -
-    {1, 0, 0, 1, 1, 0},    //  - - - - - -
-    {1, 1, 0, 1, 0, 1},    //  - - - - - -
+    {0, 0, 0, 0, 0, 0},    //  - - - - - -
+    {0, 0, 0, 0, 0, 0},    //  - - - - - -
+    {0, 0, 0, 0, 0, 0},    //  - - - - - -
+    {0, 0, 0, 0, 0, 0},    //  - - - - - -
+    {0, 0, 0, 0, 0, 0},    //  - - - - - -
     {1, 1, 1, 1, 1, 1}     //  - - - - - -
 };
 
 int jump = 0;
 int preState = 0;
 int state = 0;
+
+//LED
+const int red = 36;
+const int green = 37;
+const int blue = 38;
+
+//colourSensor
+const int S0 = 48;
+const int S1 = 49;
+const int S2 = 50;
+const int S3 = 51;
+const int sensorOut = 52;
 
 //motorDriver
 const int leftPins[] = {6, 9, 8};
@@ -48,16 +60,18 @@ unsigned long encoderLeftCount = 0;
 unsigned long encoderRightCount = 0;
 
 //Speeds
-int gyroBase = 60;
-int gyroMax = 110;
+const int rightBase = 100;
+const int leftBase = 110;
 
-int sonicRightBase = 120;
-int sonicLeftBase = 120;
-int correctionMax = 30;
+int sonicRightBase = rightBase;
+int sonicLeftBase = leftBase;
+int correctionMax = 35;
 
-int turnMax = 120;
-int turnRightBase = 110;
-int turnLeftBase = 110;
+const int rightTurnBase = 110;
+const int leftTurnBase = 120;
+
+int turnRightBase = rightTurnBase;
+int turnLeftBase = leftTurnBase;
 
 int driveMax = 110;
 int driveBase = 90;
@@ -75,39 +89,36 @@ int prevTurnError = 0;
 int prevWallError = 0;
 int prevDriveError = 0;
 
-const double gP = 0.137;
-const double gI = 0;    
-const double gD = 1.9;
-
 const double eP = 0.4;
 const double eI = 0;
 const double eD = 2;
 
-const double sP = 10;   
+const double sP = 0.8;   
 const double sI = 0;    
-const double sD = 50; //25
+const double sD = 2.5; //25
 
 const double dP = 60;
 const double dI = 0;    
-const double dD = 15;
+const double dD = 30;
 
-const double wP = 5;
+const double wP = 0.8;
 const double wI = 0;    
-const double wD = 25;
+const double wD = 2.5;
  
 const double tP = 1;
 const double tI = 0;    
 const double tD = 1;
 
 //Maze
-const int cellDistance = 23; //cm
-const int sideGap = 7;
-const int frontGap = 3;
+const int cellDistance = 238; //mm
+const int sideGapLeft = 68;
+const int sideGapRight = 60;
+const int frontGap = 3; //cm
 
 const int maxDistance = 20;
 
 //Orientation
 char orientation[4] = {'f', 'r', 'b', 'l'};
-int orientationKey = 1;
+int orientationKey = 0;
 
 int setTime = 10;

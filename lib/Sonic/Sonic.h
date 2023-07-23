@@ -5,14 +5,21 @@
 
 class Sonic{
     public:
-        Sonic(int trig, int echo, int maxDistance): sonic(trig, echo, maxDistance){}
+        Sonic(int trig, int echo, int maxDistance) : sonic(trig, echo, maxDistance){
+            t = trig;
+            e = echo;
+        };
 
         bool wallFound();
+
+        int readDistanceFront();
 
         int readDistance();
 
     private:
         NewPing sonic;
+        int t;
+        int e;
         
 };
 
