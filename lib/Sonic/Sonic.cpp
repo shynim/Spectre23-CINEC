@@ -4,7 +4,6 @@ long mm,duration;
 
 int Sonic::readDistance(){
     
-    delay(5);
     digitalWrite(t, LOW);
     delayMicroseconds(5);
     digitalWrite(t, HIGH);

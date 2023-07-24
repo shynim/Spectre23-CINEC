@@ -23,8 +23,7 @@ Cell currentCell = start;
 
 int mode = 1;
 
-void buzz()
-{
+void buzz(){
     digitalWrite(buzzer, HIGH);
     delay(200);
     digitalWrite(buzzer, LOW);
@@ -192,10 +191,15 @@ bool shouldBrake(){
 
         Cell frontCell = getCell('f');
         Cell leftCell = getCell('l');
-        if(grid[frontCell.x][frontCell.y] == grid[currentCell.x][currentCell.y] - 1 && grid[leftCell.x][leftCell.y] != grid[currentCell.x][currentCell.y] - 1){
-            return false;
-        }else{
+        Cell rightCell = getCell('r');
+        if(grid[frontCell.x][frontCell.y] != grid[currentCell.x][currentCell.y] - 1){
             return true;
+        }else{
+            if(grid[leftCell.x][leftCell.y] == grid[currentCell.x][currentCell.y] - 1 && !wallLeft()){
+                return true;
+            }else{
+                return false;
+            }
         }
     }
 }
@@ -622,6 +626,24 @@ void spectreSetup(){
 
 }
 
+void printManhattan(){
+    for(int i = 0; i < mazeSize; i++){
+        for(int j = 0; j < mazeSize; j++){
+            if(grid[i][j] >= 10){
+                Serial.print(grid[i][j]);
+                Serial.print(" ");
+
+            }else{
+                Serial.print(grid[i][j]);
+                Serial.print("  ");
+            }
+            
+        }
+        Serial.println();
+    }
+
+}
+
 void loopFloodFill(Cell end){
 
     while(!areCellsEqual(currentCell,end)){ //flood fill start
@@ -660,9 +682,6 @@ void spectreLoop(){
         if(getColour() == 0 ){
             end = currentCell;
             lightRed();
-            //turnBack();
-            //maze = mazeReverse(mazeShort(maze));
-            //break;
         }
         if(areCellsEqual(currentCell, start)){
             turnBack();
@@ -755,6 +774,8 @@ void loop(){
     mazeStart();
     spectreLoop();
 
+    // printManhattan();
+    // delay(10000);
 
     // Serial.print(leftSonic.readDistance());
     // Serial.print(" ");
