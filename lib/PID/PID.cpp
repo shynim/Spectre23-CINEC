@@ -46,14 +46,5 @@ int PID::getDriveCorrection(int error){
     return correction;
 }
 
-int PID::getTurnCorrection(int error){
-    double p = error * tP;
-    double d = (error - prevTurnError) * tD;
-
-    prevTurnError = error;
-    int correction = (int)(p + d);
-
-    return correction;
-}
 
 

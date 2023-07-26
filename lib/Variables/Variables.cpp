@@ -17,7 +17,7 @@ int verticalWallGrid[mazeSize][mazeSize+1] = {
     {1, 0, 0, 0, 0, 0, 1},   //   | | | | | | |
     {1, 0, 0, 0, 0, 0, 1},   //   | | | | | | |
     {1, 0, 0, 0, 0, 0, 1}    //   | | | | | | |
-};
+}; 
 int horizontalWallGrid[mazeSize+1][mazeSize] = {
     {1, 1, 1, 1, 1, 1},    //  - - - - - -
     {0, 0, 0, 0, 0, 0},    //  - - - - - -
@@ -65,9 +65,9 @@ const int leftBase = 110;
 
 int sonicRightBase = rightBase;
 int sonicLeftBase = leftBase;
-int correctionMax = 35;
+int correctionMax = 40;
 
-const int rightTurnBase = 110;
+const int rightTurnBase = 160;
 const int leftTurnBase = 120;
 
 int turnRightBase = rightTurnBase;
@@ -78,14 +78,12 @@ int driveBase = 90;
 
 //ultraSonic
 const int leftSonicPins[] = {32,33}; //{trig,echo}
-const int frontSonicPins[] = {34,35};
+const int frontSonicPins[] = {35,34};
 const int rightSonicPins[] = {30,31};
 
 //PID
-int prevGyroError = 0;    
 int prevEncoderError = 0;
 int prevSonicError = 0;      
-int prevTurnError = 0;
 int prevWallError = 0;
 int prevDriveError = 0;
 
@@ -95,7 +93,7 @@ const double eD = 2;
 
 const double sP = 0.8;   
 const double sI = 0;    
-const double sD = 2.5; //25
+const double sD = 3; //25
 
 const double dP = 60;
 const double dI = 0;    
@@ -103,22 +101,19 @@ const double dD = 30;
 
 const double wP = 0.8;
 const double wI = 0;    
-const double wD = 2.5;
- 
-const double tP = 1;
-const double tI = 0;    
-const double tD = 1;
+const double wD = 3;
+
 
 //Maze
 const int cellDistance = 238; //mm
-const int sideGapLeft = 68;
-const int sideGapRight = 60;
+const int sideGapLeft = 79;
+const int sideGapRight = 79;
 const int frontGap = 3; //cm
 
 const int maxDistance = 20;
 
 //Orientation
 char orientation[4] = {'f', 'r', 'b', 'l'};
-int orientationKey = 0;
+int orientationKey = 1;
 
 int setTime = 10;

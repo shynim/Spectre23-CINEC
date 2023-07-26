@@ -53,6 +53,11 @@ int getBluePW() {
 }
 
 int getColour(){
+  
+    getRedPW();
+    getGreenPW();
+    getBluePW();
+
     if(redValue > 150 && greenValue > 150 && blueValue > 150){
         return 0;
     }else if(redValue > 150 && greenValue < 150 && blueValue < 150){

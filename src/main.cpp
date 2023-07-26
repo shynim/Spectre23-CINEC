@@ -22,6 +22,7 @@ const Cell start = {mazeSize - 1,0};
 Cell currentCell = start;
 
 int mode = 1;
+int foundEnd = 0;
 
 void buzz(){
     digitalWrite(buzzer, HIGH);
@@ -240,7 +241,7 @@ void wallFollow(){
         }
         else
         {
-          int err = leftSonic.readDistance() - rightSonic.readDistance() - 4;
+          int err = leftSonic.readDistance() - rightSonic.readDistance() - 0;
           int correction = pid.getWallCorrection(err);
           driver.applyWallPid(correction * -1);
         }
@@ -352,10 +353,10 @@ void cellBrake(){
 
 void autoPosition(){
     int stableTime = 0;
-    encoderLeftCount = 0;
-    encoderRightCount = 0;
-    leftEncoder = 0;
-    rightEncoder = 0;
+    // encoderLeftCount = 0;
+    // encoderRightCount = 0;
+    // leftEncoder = 0;
+    // rightEncoder = 0;
     int setPoint = frontGap; 
 
     while(stableTime <= setTime){
@@ -406,33 +407,32 @@ void moveOneCell(){
     leftEncoder = 0;
     rightEncoder = 0;
 
-    encoderLeftCount = encoderLeftCount + 600;
-    encoderRightCount = encoderRightCount + 600;  
+    encoderLeftCount = encoderLeftCount + 620;
+    encoderRightCount = encoderRightCount + 620;  
 
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
         wallFollow();
-        if(rightEncoder >= 430 || rightEncoder <= 450){
-            getRedPW();
-        }
-        if(rightEncoder >= 580 || rightEncoder <= 600){
-            getGreenPW();
-        }
         
     }
     encoderLeftCount = encoderLeftCount + 100;
     encoderRightCount = encoderRightCount + 100; 
     
     startCounting = true; 
+    foundEnd = 0;
     countLeft = 0;
     countFront = 0;
     countRight = 0;
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
         wallFollow();
+        if(getColour() == 1){
+            foundEnd++;
+        }else{
+            foundEnd--;
+        }
 
     }
     startCounting = false;
     
-    getBluePW();
     if(!wallFront()){
         if(shouldBrake()){
             cellBrake();
@@ -460,7 +460,7 @@ void moveOneCell(){
 
 }
 
-void turn90(char dir){
+void turnLeft(){
     encoderLeftCount = 0;
     encoderRightCount = 0;
     leftEncoder = 0;
@@ -471,41 +471,85 @@ void turn90(char dir){
 
         int dif = leftEncoder - encoderLeftCount + 100;
 
-        turnRightBase = int(80+50/(1+pow(2.73,((50-dif)*0.05))));
-        turnLeftBase = int(80+50/(1+pow(2.73,((50-dif)*0.05))));
-        dir == 'r' ? driver.turnRight(turnLeftBase, turnRightBase) : driver.turnLeft(turnLeftBase, turnRightBase);
+        turnRightBase = int(70+50/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(120+50/(1+pow(2.73,((50-dif)*0.05))));
+        driver.turnLeft(turnLeftBase, turnRightBase);
         
     }
-    turnRightBase=130;
-    turnLeftBase=120;
-    encoderRightCount= encoderRightCount + 150;
-    encoderLeftCount= encoderLeftCount + 150;
-    while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
-    {
-        dir == 'r' ? driver.turnRight(turnLeftBase, turnRightBase) : driver.turnLeft(turnLeftBase, turnRightBase);
-
-    }
+    turnRightBase=120;
+    turnLeftBase=180;
     encoderRightCount= encoderRightCount + 120;
     encoderLeftCount= encoderLeftCount + 120;
+    while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
+    {
+        driver.turnLeft(turnLeftBase, turnRightBase);
+
+    }
+    encoderRightCount= encoderRightCount + 100;
+    encoderLeftCount= encoderLeftCount + 100;
     while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
     {
         int dif = leftEncoder - encoderLeftCount + 100;
-        turnRightBase = int(130-50/(1+pow(2.73,((50-dif)*0.05))));
-        turnLeftBase = int(120-50/(1+pow(2.73,((50-dif)*0.05))));
-        dir == 'r' ? driver.turnRight(turnLeftBase, turnRightBase) : driver.turnLeft(turnLeftBase, turnRightBase);
+        turnRightBase = int(120-50/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(180-50/(1+pow(2.73,((50-dif)*0.05))));
+        driver.turnLeft(turnLeftBase, turnRightBase);
 
     }
     driver.brake();
 
-    if(dir == 'r'){
-        if(orientationKey++ == 3){
-            orientationKey = 0;
-        }
-    }else{
-        if(orientationKey-- == 0){
-            orientationKey = 3;
-        }
-    } 
+    if(orientationKey-- == 0){
+        orientationKey = 3;
+    }
+
+    turnLeftBase = 120;
+    turnRightBase = 130;
+    encoderLeftCount = 0;
+    encoderRightCount = 0;
+    leftEncoder = 0;
+    rightEncoder = 0;
+
+}
+
+void turnRight(){
+    encoderLeftCount = 0;
+    encoderRightCount = 0;
+    leftEncoder = 0;
+    rightEncoder = 0;
+    encoderRightCount= encoderRightCount + 100;
+    encoderLeftCount= encoderLeftCount + 100;
+    while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
+
+        int dif = leftEncoder - encoderLeftCount + 100;
+
+        turnLeftBase = int(70+50/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(120+50/(1+pow(2.73,((50-dif)*0.05))));
+        driver.turnRight(turnLeftBase, turnRightBase);
+        
+    }
+    turnLeftBase=120;
+    turnRightBase=180; 
+    encoderRightCount= encoderRightCount + 120;
+    encoderLeftCount= encoderLeftCount + 120;
+    while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
+    {
+        driver.turnRight(turnLeftBase, turnRightBase);
+
+    }
+    encoderRightCount= encoderRightCount + 100;
+    encoderLeftCount= encoderLeftCount + 100;
+    while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
+    {
+        int dif = leftEncoder - encoderLeftCount + 100;
+        turnLeftBase = int(120-50/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(180-50/(1+pow(2.73,((50-dif)*0.05))));
+        driver.turnRight(turnLeftBase, turnRightBase);
+
+    }
+    driver.brake();
+
+    if(orientationKey++ == 3){
+        orientationKey = 0;
+    }
 
     turnLeftBase = 120;
     turnRightBase = 130;
@@ -528,7 +572,7 @@ void turnBack(){
         int dif = leftEncoder - encoderLeftCount + 100;
         turnRightBase = int(80+50/(1+pow(2.73,((50-dif)*0.05))));
         turnLeftBase = int(80+50/(1+pow(2.73,((50-dif)*0.05))));
-        driver.turnLeft(turnLeftBase, turnRightBase);
+        driver.turnRight(turnLeftBase, turnRightBase);
 
     }
     turnRightBase=rightTurnBase;
@@ -537,7 +581,7 @@ void turnBack(){
     encoderLeftCount= encoderLeftCount + 550;
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
     {
-        driver.turnLeft(turnLeftBase, turnRightBase);
+        driver.turnRight(turnLeftBase, turnRightBase);
 
     }
     encoderRightCount= encoderRightCount + 100;
@@ -547,7 +591,7 @@ void turnBack(){
         int dif = leftEncoder - encoderLeftCount + 100;
         turnRightBase = int(130-50/(1+pow(2.73,((50-dif)*0.05))));
         turnLeftBase = int(130-50/(1+pow(2.73,((50-dif)*0.05))));
-        driver.turnLeft(turnLeftBase, turnRightBase);
+        driver.turnRight(turnLeftBase, turnRightBase);
 
     }
     driver.brake();
@@ -659,11 +703,11 @@ void loopFloodFill(Cell end){
             Cell backCell = getCell('b');
 
             if(!areCellsEqual(leftCell,{-1,-1}) && grid[leftCell.x][leftCell.y] == manhattanDistance - 1 && !wallLeft()){
-                turn90('l');
+                turnLeft();
             }else if(!areCellsEqual(frontCell,{-1,-1}) && grid[frontCell.x][frontCell.y] == manhattanDistance - 1 && !wallFront()){
                 
             }else if(!areCellsEqual(rightCell,{-1,-1}) && grid[rightCell.x][rightCell.y] == manhattanDistance - 1 && !wallRight()){
-                turn90('r');
+                turnRight();
             }else if(!areCellsEqual(backCell,{-1,-1}) && grid[backCell.x][backCell.y] == manhattanDistance - 1){
                 turnBack();
             }else{break;}
@@ -676,12 +720,14 @@ void loopFloodFill(Cell end){
 void spectreLoop(){
     
     mode = 1;
+    lightBlue();
     while(true){ //left hand rule
 
         updateWall(); 
-        if(getColour() == 0 ){
+        if(areCellsEqual(currentCell, end)){
             end = currentCell;
             lightRed();
+            buzz();
         }
         if(areCellsEqual(currentCell, start)){
             turnBack();
@@ -689,14 +735,14 @@ void spectreLoop(){
         }
 
         if(!wallLeft()){
-            turn90('l');
+            turnLeft();
             maze += 'L';
         }else if(!wallFront()){
             if(junctionFound()){
                 maze += 'S'; 
             }
         }else if(!wallRight()){
-            turn90('r');
+            turnRight();
             maze += 'R';
         }else{
             maze += 'B';
@@ -722,10 +768,10 @@ void spectreLoop(){
     //         switch (turn)
     //         {
     //         case 'L':
-    //             turn90('l');
+    //             turnLeft();
     //             break;
     //         case 'R':
-    //             turn90('r');
+    //             turnRight();
     //             break;
     //         case 'S':
     //             break;
@@ -740,7 +786,7 @@ void spectreLoop(){
     // } //at start
 
     mode = 3;
-
+    lightGreen();
     while(true){
         loopFloodFill(end);
         floodFill.clearGrid();
@@ -768,25 +814,29 @@ void setup(){
 }
 
 void loop(){ 
-    end = {5, 4};
-    
+    end = {3, 0};
 
     mazeStart();
     spectreLoop();
 
+    // turnBack();
+    // delay(1000);
+    // turnLeft();
+    // delay(2000);
+    // turnRight();
+    // delay(2000);
     // printManhattan();
     // delay(10000);
 
     // Serial.print(leftSonic.readDistance());
     // Serial.print(" ");
+    // Serial.print(frontSonic.readDistance());
+    // Serial.print(" ");
     // Serial.print(rightSonic.readDistance());
     // Serial.println();
     // getRedPW();
-    // delay(200);
     // getGreenPW();
-    // delay(200);
     // getBluePW();
-    // delay(200);
     // serialPrint(getColour());
 
 }
