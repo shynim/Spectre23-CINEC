@@ -13,6 +13,7 @@ class FloodFill{
         void updateWall(Cell currentCell, bool leftWall, bool frontWall, bool RightWall, char orientation);
  
         void clearGrid();
+        
     private:
         bool isCellAccesible(Cell parentCell, Cell childCell);
     

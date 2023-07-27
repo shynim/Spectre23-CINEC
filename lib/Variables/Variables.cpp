@@ -34,8 +34,8 @@ int state = 0;
 
 //LED
 const int red = 36;
-const int green = 37;
-const int blue = 38;
+const int blue = 37;
+const int green = 38;
 
 //colourSensor
 const int S0 = 48;
@@ -47,8 +47,6 @@ const int sensorOut = 52;
 //motorDriver
 const int leftPins[] = {6, 9, 8};
 const int rightPins[] = {7, 10, 11};
-
-int stopDelay = 200;
 
 //encoder
 const int leftEncoderPins[] = {2,3};
@@ -93,7 +91,7 @@ const double eD = 2;
 
 const double sP = 0.8;   
 const double sI = 0;    
-const double sD = 3; //25
+const double sD = 3;
 
 const double dP = 60;
 const double dI = 0;    
@@ -102,7 +100,6 @@ const double dD = 30;
 const double wP = 0.8;
 const double wI = 0;    
 const double wD = 3;
-
 
 //Maze
 const int cellDistance = 238; //mm
@@ -117,3 +114,4 @@ char orientation[4] = {'f', 'r', 'b', 'l'};
 int orientationKey = 1;
 
 int setTime = 10;
+int stopDelay = 200;

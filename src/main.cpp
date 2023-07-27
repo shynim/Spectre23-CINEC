@@ -192,7 +192,7 @@ bool shouldBrake(){
 
         Cell frontCell = getCell('f');
         Cell leftCell = getCell('l');
-        Cell rightCell = getCell('r');
+ 
         if(grid[frontCell.x][frontCell.y] != grid[currentCell.x][currentCell.y] - 1){
             return true;
         }else{
@@ -407,8 +407,8 @@ void moveOneCell(){
     leftEncoder = 0;
     rightEncoder = 0;
 
-    encoderLeftCount = encoderLeftCount + 620;
-    encoderRightCount = encoderRightCount + 620;  
+    encoderLeftCount = encoderLeftCount + 650;
+    encoderRightCount = encoderRightCount + 650;  
 
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
         wallFollow();
@@ -472,7 +472,7 @@ void turnLeft(){
         int dif = leftEncoder - encoderLeftCount + 100;
 
         turnRightBase = int(70+50/(1+pow(2.73,((50-dif)*0.05))));
-        turnLeftBase = int(120+50/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(130+50/(1+pow(2.73,((50-dif)*0.05))));
         driver.turnLeft(turnLeftBase, turnRightBase);
         
     }
@@ -521,13 +521,13 @@ void turnRight(){
 
         int dif = leftEncoder - encoderLeftCount + 100;
 
-        turnLeftBase = int(70+50/(1+pow(2.73,((50-dif)*0.05))));
-        turnRightBase = int(120+50/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(120+50/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(110+50/(1+pow(2.73,((50-dif)*0.05))));
         driver.turnRight(turnLeftBase, turnRightBase);
         
     }
-    turnLeftBase=120;
-    turnRightBase=180; 
+    turnLeftBase=170;
+    turnRightBase=160; 
     encoderRightCount= encoderRightCount + 120;
     encoderLeftCount= encoderLeftCount + 120;
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
@@ -540,8 +540,8 @@ void turnRight(){
     while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
     {
         int dif = leftEncoder - encoderLeftCount + 100;
-        turnLeftBase = int(120-50/(1+pow(2.73,((50-dif)*0.05))));
-        turnRightBase = int(180-50/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(170-50/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(160-50/(1+pow(2.73,((50-dif)*0.05))));
         driver.turnRight(turnLeftBase, turnRightBase);
 
     }
@@ -787,12 +787,19 @@ void spectreLoop(){
 
     mode = 3;
     lightGreen();
-    while(true){
-        loopFloodFill(end);
-        floodFill.clearGrid();
-        loopFloodFill(start);
-        floodFill.clearGrid();
-    }
+    
+    loopFloodFill(end);
+    floodFill.clearGrid();
+    loopFloodFill(start);
+    floodFill.clearGrid();
+
+    turnBack();
+    driver.stop();
+    buzz();
+    delay(500);
+    buzz();
+    delay(10000000);
+    
 
 }
 
@@ -815,7 +822,7 @@ void setup(){
 
 void loop(){ 
     end = {3, 0};
-
+    delay(5000);
     mazeStart();
     spectreLoop();
 
@@ -825,6 +832,7 @@ void loop(){
     // delay(2000);
     // turnRight();
     // delay(2000);
+
     // printManhattan();
     // delay(10000);
 
@@ -834,6 +842,7 @@ void loop(){
     // Serial.print(" ");
     // Serial.print(rightSonic.readDistance());
     // Serial.println();
+
     // getRedPW();
     // getGreenPW();
     // getBluePW();
