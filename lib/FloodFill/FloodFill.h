@@ -4,6 +4,7 @@
 struct Cell {
     int x;
     int y;
+
 };
 
 class FloodFill{

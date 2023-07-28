@@ -23,6 +23,16 @@ Cell currentCell = start;
 
 int mode = 1;
 int foundEnd = 0;
+int left,right,front,passedPoint;
+
+bool cellVisited[mazeSize][mazeSize] = {
+    {false, false, false ,false ,false, false},
+    {false, false, false ,false ,false, false},
+    {false, false, false ,false ,false, false},
+    {false, false, false ,false ,false, false},
+    {false, false, false ,false ,false, false},
+    {true, false, false ,false ,false, false}
+};
 
 void buzz(){
     digitalWrite(buzzer, HIGH);
@@ -169,11 +179,50 @@ bool deadEnd(){
 int mazeIndex = 0;
 bool shouldBrake(){
     if(mode == 1){
+        left = (3 + orientationKey);
+        right = (1 + orientationKey);
+        front = (0 + orientationKey);
+        passedPoint = (2 + orientationKey);
+
+        if(left > 3){left = left - 4;}
+        if(right > 3){right = right - 4;}
+        if(front > 3){front = front - 4;}
+        if(passedPoint > 3){passedPoint = passedPoint - 4;}
         
-        if(wallLeft()){
+        if(!wallLeft() && wallRight() && wallFront()){
+            return true;
+        }else if(wallLeft() && !wallRight() && wallFront()){
+            return true;
+        }else if(wallLeft() && wallRight() && !wallFront()){
             return false;
+        }else if(!wallLeft() && !wallRight() && !wallFront()){
+            if(tremaux[currentCell.x][currentCell.y][left] <= tremaux[currentCell.x][currentCell.y][front]){
+                return true;
+            }else if(tremaux[currentCell.x][currentCell.y][front] <= tremaux[currentCell.x][currentCell.y][right]){
+                return false;
+            }else{
+                return true;
+            }
+        }else if(!wallLeft() && wallRight() && !wallFront()){
+            if(tremaux[currentCell.x][currentCell.y][left] <= tremaux[currentCell.x][currentCell.y][front]){
+                return true;
+            }else{
+                return false;
+            }
+        }else if(wallLeft() && !wallRight() && !wallFront()){
+            if(tremaux[currentCell.x][currentCell.y][front] <= tremaux[currentCell.x][currentCell.y][right]){
+                return false;
+            }else{
+                return true;        
+            }
+        }else if(!wallLeft() && !wallRight() && wallFront()){
+            if(tremaux[currentCell.x][currentCell.y][left] <= tremaux[currentCell.x][currentCell.y][right]){
+                return true;
+            }else{
+                return true;
+            }
         }else{
-           return true;
+            return true;
         }
 
     }else if(mode == 2){
@@ -195,9 +244,11 @@ bool shouldBrake(){
  
         if(grid[frontCell.x][frontCell.y] != grid[currentCell.x][currentCell.y] - 1){
             return true;
+            buzz();
         }else{
             if(grid[leftCell.x][leftCell.y] == grid[currentCell.x][currentCell.y] - 1 && !wallLeft()){
                 return true;
+                buzz();
             }else{
                 return false;
             }
@@ -319,8 +370,8 @@ void cellStart(){
 
     while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
         int dif = leftEncoder - encoderLeftCount + 200;
-        sonicRightBase = (rightBase - 30) + int(dif/(200/30));
-        sonicLeftBase = (leftBase - 30) + int(dif/(200/30));
+        sonicRightBase = (rightBase - 20) + int(dif/(200/20));
+        sonicLeftBase = (leftBase - 20) + int(dif/(200/20));
         wallFollow();
 
     }
@@ -339,8 +390,8 @@ void cellBrake(){
 
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount){
         int dif = leftEncoder - encoderLeftCount + 150;
-        sonicRightBase = rightBase - int(dif/5);
-        sonicLeftBase = leftBase - int(dif/5);
+        sonicRightBase = rightBase - int(dif/7.5);
+        sonicLeftBase = leftBase - int(dif/7.5);
         wallFollow();
 
     }
@@ -385,6 +436,8 @@ boolean braked = true;
 void moveOneCell(){
     
     currentCell = getCurrentCell(orientationKey);
+    cellVisited[currentCell.x][currentCell.y] = true;
+
     if(braked){
         cellStart();
     }else{
@@ -472,7 +525,7 @@ void turnLeft(){
 
         int dif = leftEncoder - encoderLeftCount + 100;
 
-        turnRightBase = int(70+50/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(80+40/(1+pow(2.73,((50-dif)*0.05))));
         turnLeftBase = int(130+50/(1+pow(2.73,((50-dif)*0.05))));
         driver.turnLeft(turnLeftBase, turnRightBase);
         
@@ -502,13 +555,6 @@ void turnLeft(){
         orientationKey = 3;
     }
 
-    turnLeftBase = 120;
-    turnRightBase = 130;
-    encoderLeftCount = 0;
-    encoderRightCount = 0;
-    leftEncoder = 0;
-    rightEncoder = 0;
-
 }
 
 void turnRight(){
@@ -522,13 +568,13 @@ void turnRight(){
 
         int dif = leftEncoder - encoderLeftCount + 100;
 
-        turnLeftBase = int(120+50/(1+pow(2.73,((50-dif)*0.05))));
-        turnRightBase = int(110+50/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(80+40/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(130+50/(1+pow(2.73,((50-dif)*0.05))));
         driver.turnRight(turnLeftBase, turnRightBase);
         
     }
-    turnLeftBase=170;
-    turnRightBase=160; 
+    turnLeftBase=120;
+    turnRightBase=180;
     encoderRightCount= encoderRightCount + 120;
     encoderLeftCount= encoderLeftCount + 120;
     while(rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
@@ -541,8 +587,8 @@ void turnRight(){
     while (rightEncoder <= encoderRightCount || leftEncoder <= encoderLeftCount)
     {
         int dif = leftEncoder - encoderLeftCount + 100;
-        turnLeftBase = int(170-50/(1+pow(2.73,((50-dif)*0.05))));
-        turnRightBase = int(160-50/(1+pow(2.73,((50-dif)*0.05))));
+        turnLeftBase = int(120-40/(1+pow(2.73,((50-dif)*0.05))));
+        turnRightBase = int(180-100/(1+pow(2.73,((50-dif)*0.05))));
         driver.turnRight(turnLeftBase, turnRightBase);
 
     }
@@ -551,13 +597,6 @@ void turnRight(){
     if(orientationKey++ == 3){
         orientationKey = 0;
     }
-
-    turnLeftBase = 120;
-    turnRightBase = 130;
-    encoderLeftCount = 0;
-    encoderRightCount = 0;
-    leftEncoder = 0;
-    rightEncoder = 0;
 
 }
 
@@ -748,24 +787,132 @@ void spectreLoop(){
             lightRed();
             buzz();
             lightBlue();
-        }
-    
-        if(areCellsEqual(currentCell, start)){
-            buzz();
             turnBack();
             break;
         }
 
-        if(!wallLeft()){
+        left = (3 + orientationKey);
+        right = (1 + orientationKey);
+        front = (0 + orientationKey);
+        passedPoint = (2 + orientationKey);
+
+        if(left > 3){left = left - 4;}
+        if(right > 3){right = right - 4;}
+        if(front > 3){front = front - 4;}
+        if(passedPoint > 3){passedPoint = passedPoint - 4;}
+        
+        // Serial.print(currentCell.x);
+        // Serial.print(" ");
+        // Serial.print(currentCell.y);
+        // Serial.print("     ");
+
+        // Serial.print(tremaux[currentCell.x][currentCell.y][front]);
+        // Serial.print(" ");
+        // Serial.print(tremaux[currentCell.x][currentCell.y][right]);
+        // Serial.print(" ");
+        // Serial.print(tremaux[currentCell.x][currentCell.y][passedPoint]);
+        // Serial.print(" ");
+        // Serial.print(tremaux[currentCell.x][currentCell.y][left]);
+        // Serial.println();
+        
+        if(!wallLeft() && wallRight() && wallFront()){
             turnLeft();
             maze += 'L';
-        }else if(!wallFront()){
-            if(junctionFound()){
-                maze += 'S'; 
-            }
-        }else if(!wallRight()){
+        }else if(wallLeft() && !wallRight() && wallFront()){
             turnRight();
             maze += 'R';
+        }else if(wallLeft() && wallRight() && !wallFront()){
+
+        }else if(!wallLeft() && !wallRight() && !wallFront()){
+            if(tremaux[currentCell.x][currentCell.y][left] <= tremaux[currentCell.x][currentCell.y][front]){
+                tremaux[currentCell.x][currentCell.y][left]++;
+                tremaux[getCell('l').x][getCell('l').y][right]++;
+                if(cellVisited[currentCell.x][currentCell.y] == true){
+                    tremaux[currentCell.x][currentCell.y][passedPoint]++;
+                    tremaux[getCell('b').x][getCell('b').y][front]++;
+                }
+                turnLeft();
+                maze += 'L';
+            }else if(tremaux[currentCell.x][currentCell.y][front] <= tremaux[currentCell.x][currentCell.y][right]){
+                tremaux[currentCell.x][currentCell.y][front]++;
+                tremaux[getCell('f').x][getCell('f').y][passedPoint]++;
+                if(cellVisited[currentCell.x][currentCell.y] == true){
+                    tremaux[currentCell.x][currentCell.y][passedPoint]++;
+                    tremaux[getCell('b').x][getCell('b').y][front]++;
+                }
+                maze += 'S';
+            }else{
+                tremaux[currentCell.x][currentCell.y][right]++;
+                tremaux[getCell('r').x][getCell('r').y][left]++;
+                if(cellVisited[currentCell.x][currentCell.y] == true){
+                    tremaux[currentCell.x][currentCell.y][passedPoint]++;
+                    tremaux[getCell('b').x][getCell('b').y][front]++;
+                }
+                maze += 'S';
+            }
+            
+        }else if(!wallLeft() && wallRight() && !wallFront()){
+            if(tremaux[currentCell.x][currentCell.y][left] <= tremaux[currentCell.x][currentCell.y][front]){
+                tremaux[currentCell.x][currentCell.y][left]++;
+                tremaux[getCell('l').x][getCell('l').y][right]++;
+                if(cellVisited[currentCell.x][currentCell.y] == true){
+                    tremaux[currentCell.x][currentCell.y][passedPoint]++;
+                    tremaux[getCell('b').x][getCell('b').y][front]++;
+                }
+                turnLeft();
+                maze += 'L';
+            }else{
+                tremaux[currentCell.x][currentCell.y][front]++;
+                tremaux[getCell('f').x][getCell('f').y][passedPoint]++;
+                if(cellVisited[currentCell.x][currentCell.y] == true){
+                    tremaux[currentCell.x][currentCell.y][passedPoint]++;
+                    tremaux[getCell('b').x][getCell('b').y][front]++;
+                }
+                maze += 'S';
+            }
+            
+        }else if(wallLeft() && !wallRight() && !wallFront()){
+            if(tremaux[currentCell.x][currentCell.y][front] <= tremaux[currentCell.x][currentCell.y][right]){
+                tremaux[currentCell.x][currentCell.y][front]++;
+                tremaux[getCell('f').x][getCell('f').y][passedPoint]++;
+                if(cellVisited[currentCell.x][currentCell.y] == true){
+                    tremaux[currentCell.x][currentCell.y][passedPoint]++;
+                    tremaux[getCell('b').x][getCell('b').y][front]++;
+                }
+
+                maze += 'S';
+                
+            }else{
+                tremaux[currentCell.x][currentCell.y][right]++;
+                tremaux[getCell('r').x][getCell('r').y][left]++;
+                if(cellVisited[currentCell.x][currentCell.y] == true){
+                    tremaux[currentCell.x][currentCell.y][passedPoint]++;
+                    tremaux[getCell('b').x][getCell('b').y][front]++;
+                }
+                turnRight();
+                maze += 'R';
+            }
+            
+        }else if(!wallLeft() && !wallRight() && wallFront()){
+            if(tremaux[currentCell.x][currentCell.y][left] <= tremaux[currentCell.x][currentCell.y][right]){
+                tremaux[currentCell.x][currentCell.y][left]++;
+                tremaux[getCell('l').x][getCell('l').y][right]++;
+                if(cellVisited[currentCell.x][currentCell.y] == true){
+                    tremaux[currentCell.x][currentCell.y][passedPoint]++;
+                    tremaux[getCell('b').x][getCell('b').y][front]++;
+                }
+                turnLeft();
+                maze += 'L';
+            }else{
+                tremaux[currentCell.x][currentCell.y][right]++;
+                tremaux[getCell('r').x][getCell('r').y][left]++;
+                if(cellVisited[currentCell.x][currentCell.y] == true){
+                    tremaux[currentCell.x][currentCell.y][passedPoint]++;
+                    tremaux[getCell('b').x][getCell('b').y][front]++;
+                }
+                turnRight();
+                maze += 'R';
+            }
         }else{
             maze += 'B';
             turnBack();
@@ -808,24 +955,23 @@ void spectreLoop(){
     // } //at start
 
     mode = 3;
-    lightGreen();
     while(true){
+        
+        loopFloodFill(start);
+        floodFill.clearGrid();
+
+        turnBack();
         while(frontSonic.readDistanceFront() == 0){}
         
         delay(500);
         buzz();
         delay(500);
-        
+
         loopFloodFill(end);
         floodFill.clearGrid();
-
         mazeEnd();
-
-        loopFloodFill(start);
-        floodFill.clearGrid();
-
         turnBack();
-        
+
     }
 
 }
@@ -847,6 +993,11 @@ void loop(){
     
     mazeStart();
     spectreLoop();
+
+    // turnRight();
+    // delay(4000);
+    // turnLeft();
+    // delay(4000);
 
     // turnBack();
     // delay(1000);

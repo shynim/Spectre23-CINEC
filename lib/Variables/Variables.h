@@ -10,6 +10,8 @@ extern int grid[mazeSize][mazeSize];
 extern int verticalWallGrid[mazeSize][mazeSize+1];
 extern int horizontalWallGrid[mazeSize+1][mazeSize];
 
+extern int tremaux[mazeSize][mazeSize][4];
+
 extern int jump;
 extern int preState;
 extern int state;
