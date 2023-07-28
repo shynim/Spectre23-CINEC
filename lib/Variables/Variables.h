@@ -42,8 +42,8 @@ extern unsigned long encoderLeftCount;
 extern unsigned long encoderRightCount;
 
 //Speeds
-extern const int rightBase;
-extern const int leftBase;
+extern int rightBase;
+extern int leftBase;
 
 extern const int rightTurnBase;
 extern const int leftTurnBase;

@@ -58,8 +58,8 @@ unsigned long encoderLeftCount = 0;
 unsigned long encoderRightCount = 0;
 
 //Speeds
-const int rightBase = 100;
-const int leftBase = 110;
+int rightBase = 110;
+int leftBase = 120;
 
 int sonicRightBase = rightBase;
 int sonicLeftBase = leftBase;
@@ -71,8 +71,8 @@ const int leftTurnBase = 120;
 int turnRightBase = rightTurnBase;
 int turnLeftBase = leftTurnBase;
 
-int driveMax = 110;
-int driveBase = 90;
+int driveMax = 120;
+int driveBase = 100;
 
 //ultraSonic
 const int leftSonicPins[] = {32,33}; //{trig,echo}
@@ -104,14 +104,14 @@ const double wD = 3;
 //Maze
 const int cellDistance = 238; //mm
 const int sideGapLeft = 79;
-const int sideGapRight = 79;
+const int sideGapRight = 74;
 const int frontGap = 3; //cm
 
 const int maxDistance = 20;
 
 //Orientation
 char orientation[4] = {'f', 'r', 'b', 'l'};
-int orientationKey = 1;
+int orientationKey = 0;
 
 int setTime = 10;
-int stopDelay = 200;
+int stopDelay = 50;
